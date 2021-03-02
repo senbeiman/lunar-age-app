@@ -22,7 +22,7 @@ const MainScreen: React.FC = () => {
     const unsubscribe = navigation.addListener('focus', () => {
       db.transaction(tx => {
         tx.executeSql(
-          `create table if not exists items (id integer primary key not null, name text not null, memo text, has_day integer default 0, birthday text default (date('now', 'localtime')));`
+          `create table if not exists items (id integer primary key not null, name text not null, memo text, has_day integer not null, birthday text not null);`
         )
         tx.executeSql(
           'select * from items',
