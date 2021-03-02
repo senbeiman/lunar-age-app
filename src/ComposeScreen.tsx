@@ -8,28 +8,6 @@ import { Formik } from 'formik'
 import FormikTextInput from './components/FormikTextInput'
 import { formatISO } from 'date-fns'
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  birthContainer: {
-    flexDirection: "row",
-    marginRight: -20,
-    marginLeft: 10,
-  },
-  birthYearInput: {
-    flex: 2,
-    marginRight: 20,
-    marginLeft: -10,
-  },
-  birthInput: {
-    flex: 1,
-    marginRight: 20,
-    marginLeft: -10,
-  },
-})
-
 const db = SQLite.openDatabase('db.db')
 
 const validationSchema = yup.object().shape({
@@ -63,7 +41,7 @@ const ComposeScreen = () => {
 
   const onPressSave = (values: FormValues) => {
     const hasDay = values.birthDay ? 1 : 0
-    const birthday = formatISO(new Date(Number(values.birthYear), Number(values.birthMonth) - 1, Number(values.birthDay)), { representation: 'date'})
+    const birthday = formatISO(new Date(Number(values.birthYear), Number(values.birthMonth) - 1, hasDay ? Number(values.birthDay) : 1), { representation: 'date'})
     db.transaction(
       tx => {
         tx.executeSql('insert into items (name, memo, has_day, birthday) values (?, ?, ?, ?)', [values.name, values.memo, hasDay, birthday])
@@ -127,5 +105,27 @@ const ComposeScreen = () => {
     </Formik>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  birthContainer: {
+    flexDirection: "row",
+    marginRight: -20,
+    marginLeft: 10,
+  },
+  birthYearInput: {
+    flex: 2,
+    marginRight: 20,
+    marginLeft: -10,
+  },
+  birthInput: {
+    flex: 1,
+    marginRight: 20,
+    marginLeft: -10,
+  },
+})
 
 export default ComposeScreen

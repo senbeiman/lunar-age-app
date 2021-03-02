@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native'
-import { differenceInMonths, parseISO } from 'date-fns'
+import { parseISO } from 'date-fns'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
-import { FAB, List, Title } from 'react-native-paper'
+import { FAB, List } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import AgeText from './components/AgeText'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -50,12 +52,16 @@ const MainScreen: React.FC = () => {
         data={items}
         keyExtractor={item => `${item.id}`}
         renderItem={({ item }) => (
-          <List.Item
-            title={item.name}
-            description={item.memo}
-            left={(props) => <List.Icon {...props} icon="account" />}
-            right={(props) => <AgeText {...props} date={item.birthday} />}
-          />
+          <TouchableOpacity onPress={() => navigation.navigate('Details', {
+            itemId: item.id
+          })}>
+            <List.Item
+              title={item.name}
+              description={item.memo}
+              left={(props) => <List.Icon {...props} icon="account" />}
+              right={(props) => <AgeText {...props} date={item.birthday} />}
+            />
+          </TouchableOpacity>
         )}
       />
       <FAB 
@@ -71,15 +77,6 @@ const MainScreen: React.FC = () => {
   );
 }
 
-const AgeText: React.FC<{date: Date}> = ({ date }) => {
-  const diffInMonth = differenceInMonths(new Date(), date)
-  const year = Math.floor(diffInMonth / 12)
-  const month = diffInMonth % 12
-  return (
-    <Title>{year}歳{month}ヶ月</Title>
-  )
-
-}
 const styles = StyleSheet.create({
   container: {
     flex: 1,

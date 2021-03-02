@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import MainScreen from './src/MainScreen'
 import ComposeScreen from './src/ComposeScreen'
+import DetailsScreen from './src/DetailsScreen'
 
 const Stack = createStackNavigator()
 
@@ -18,6 +19,13 @@ export default function App() {
             component={MainScreen} 
             options={{
               title: '月齢リスト'
+            }}
+          />
+          <Stack.Screen 
+            name="Details"
+            component={DetailsScreen} 
+            options={{
+              title: '詳細'
             }}
           />
           <Stack.Screen 
