@@ -1,8 +1,8 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { parseISO, format } from 'date-fns'
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
-import { Paragraph, Text, Title, Button } from 'react-native-paper'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
+import { Dimensions, StyleSheet, View } from 'react-native'
+import { Paragraph, Text, Title, Button, IconButton, Menu, Provider } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import AgeText from './components/AgeText'
 import { RouteParamList } from './types'
@@ -21,7 +21,18 @@ const DetailsScreen: React.FC = () => {
   const navigation = useNavigation()
   const { params: { itemId } } = useRoute<RouteProp<RouteParamList, 'Details'>>()
   const [item, setItem] = useState<Item | null>(null)
+  const [menuVisible, setMenuVisible] = useState(false)
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <IconButton 
+          icon="menu"
+          onPress={() => setMenuVisible(!menuVisible)}
+        />
+      )
+    })
+  }, [navigation])
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       db.transaction(tx => {
@@ -37,7 +48,7 @@ const DetailsScreen: React.FC = () => {
         })
       })
     return unsubscribe
-  }, [])
+  }, [navigation])
   const onDeletePress = () => {
     db.transaction(
       tx => {
@@ -60,20 +71,21 @@ const DetailsScreen: React.FC = () => {
       <Text>{format(item.birthday, "yyyy年M月")}{item.hasDay && format(item.birthday, "d日")}生まれ</Text>
       <AgeText date={item.birthday}/>
       <Paragraph>{item.memo}</Paragraph>
-      <Button 
-        mode="contained"
-        style={{
-          marginBottom: 16
-        }}
-        onPress={() => {
+      <Menu
+        visible={menuVisible}
+        onDismiss={() => setMenuVisible(false)}
+        anchor={{x: Dimensions.get("window").width, y: 120}}>
+        <Menu.Item onPress={() => {
+          setMenuVisible(false)
           navigation.navigate('Compose', {
             itemId: item.id
           })
-      }}>編集</Button>
-      <Button 
-        mode="contained"
-        onPress={onDeletePress}
-      >削除</Button>
+        }} title="編集" />
+        <Menu.Item onPress={() => {
+          setMenuVisible(false)
+          onDeletePress()
+        }} title="削除" />
+      </Menu>
     </View>
   );
 }

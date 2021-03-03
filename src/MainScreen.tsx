@@ -39,7 +39,7 @@ const MainScreen: React.FC = () => {
       })
     })
     return unsubscribe
-  }, [])
+  }, [navigation])
 
   const onPressAdd = () => {
     navigation.navigate('Compose')

@@ -47,8 +47,9 @@ const defaultValues = {
 } 
 const ComposeScreen = () => {
   const navigation = useNavigation()
-  const { params: { itemId } } = useRoute<RouteProp<RouteParamList, 'Details'>>()
+  const { params } = useRoute<RouteProp<RouteParamList, 'Details'>>()
   const [initialValues, setInitialValues] = useState(defaultValues) 
+  const itemId = params?.itemId
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -57,6 +58,7 @@ const ComposeScreen = () => {
         setInitialValues(defaultValues)
         return
       }
+      navigation.setOptions({ title: "編集"})
       db.transaction(tx => {
         tx.executeSql(
           'select * from items where id = ?;',
@@ -75,7 +77,7 @@ const ComposeScreen = () => {
         })
       })
     return unsubscribe
-  }, [])
+  }, [navigation])
   const onPressSave = (values: FormValues) => {
     const hasDay = values.birthDay ? 1 : 0
     const birthday = formatISO(new Date(Number(values.birthYear), Number(values.birthMonth) - 1, hasDay ? Number(values.birthDay) : 1), { representation: 'date'})

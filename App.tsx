@@ -25,7 +25,7 @@ export default function App() {
             name="Details"
             component={DetailsScreen} 
             options={{
-              title: '詳細'
+              title: '詳細',
             }}
           />
           <Stack.Screen 
