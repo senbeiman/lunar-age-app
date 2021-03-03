@@ -1,9 +1,11 @@
-import { useNavigation, useRoute } from '@react-navigation/native'
-import { differenceInMonths, parseISO } from 'date-fns'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
+import { parseISO, format } from 'date-fns'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, FlatList } from 'react-native'
-import { Paragraph, Text, Title } from 'react-native-paper'
+import { StyleSheet, View } from 'react-native'
+import { Paragraph, Text, Title, Button } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
+import AgeText from './components/AgeText'
+import { RouteParamList } from './types'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -14,9 +16,10 @@ interface Item {
   birthday: Date
   hasDay: boolean
 }
+
 const DetailsScreen: React.FC = () => {
   const navigation = useNavigation()
-  const { params } = useRoute()
+  const { params: { itemId } } = useRoute<RouteProp<RouteParamList, 'Details'>>()
   const [item, setItem] = useState<Item | null>(null)
 
   useEffect(() => {
@@ -24,17 +27,29 @@ const DetailsScreen: React.FC = () => {
       db.transaction(tx => {
         tx.executeSql(
           'select * from items where id = ?;',
-          [params?.itemId],
+          [itemId],
           (_, { rows } ) => {
             console.log(rows)
-            const dbItem = rows._array[0]
-            const item = {...dbItem, birthday: parseISO(dbItem.birthday), hasDay: Boolean(dbItem.hasDay)}
-            setItem(item)
+            const dbItem = rows._array.find(row => row.id === itemId)
+            const parsedItem = {...dbItem, birthday: parseISO(dbItem.birthday), hasDay: Boolean(dbItem.has_day)}
+            setItem(parsedItem)
           })
         })
       })
     return unsubscribe
   }, [])
+  const onDeletePress = () => {
+    db.transaction(
+      tx => {
+        tx.executeSql(
+          'delete from items where id = ?;',
+          [itemId]
+        )
+      },
+      () => {console.log('error')}, 
+      () => {navigation.goBack()}
+    )
+  }
 
   if (!item) {
     return null
@@ -42,8 +57,23 @@ const DetailsScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <Title>{item.name}</Title>
-      <Text>{`${item.birthday}`}</Text>
+      <Text>{format(item.birthday, "yyyy年M月")}{item.hasDay && format(item.birthday, "d日")}生まれ</Text>
+      <AgeText date={item.birthday}/>
       <Paragraph>{item.memo}</Paragraph>
+      <Button 
+        mode="contained"
+        style={{
+          marginBottom: 16
+        }}
+        onPress={() => {
+          navigation.navigate('Compose', {
+            itemId: item.id
+          })
+      }}>編集</Button>
+      <Button 
+        mode="contained"
+        onPress={onDeletePress}
+      >削除</Button>
     </View>
   );
 }
@@ -51,6 +81,7 @@ const DetailsScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
   },
 })
 
