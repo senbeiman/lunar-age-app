@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { parseISO, format } from 'date-fns'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
-import { Paragraph, Text, Title, Button, IconButton, Menu, Provider } from 'react-native-paper'
+import { Paragraph, Text, Title, Button, IconButton, Menu, Provider, Portal, Dialog } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import AgeText from './components/AgeText'
 import { RouteParamList } from './types'
@@ -22,13 +22,14 @@ const DetailsScreen: React.FC = () => {
   const { params: { itemId } } = useRoute<RouteProp<RouteParamList, 'Details'>>()
   const [item, setItem] = useState<Item | null>(null)
   const [menuVisible, setMenuVisible] = useState(false)
+  const [dialogVisible, setDialogVisible] = useState(false)
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <IconButton 
           icon="menu"
-          onPress={() => setMenuVisible(!menuVisible)}
+          onPress={() => setMenuVisible(true)}
         />
       )
     })
@@ -83,9 +84,24 @@ const DetailsScreen: React.FC = () => {
         }} title="編集" />
         <Menu.Item onPress={() => {
           setMenuVisible(false)
-          onDeletePress()
+          setDialogVisible(true)
         }} title="削除" />
       </Menu>
+      <Portal>
+        <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+          <Dialog.Title>削除</Dialog.Title>
+          <Dialog.Content>
+            <Paragraph>{item.name}を削除してもよろしいですか？</Paragraph>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
+            <Button onPress={() => {
+              setDialogVisible(false)
+              onDeletePress()
+            }}>OK</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 }
