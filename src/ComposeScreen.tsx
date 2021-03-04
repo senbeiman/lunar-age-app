@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View, Image } from 'react-native'
-import { Button } from 'react-native-paper'
+import { Button, Text } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import FormTextInput from './components/FormTextInput'
@@ -9,6 +9,8 @@ import { RouteParamList } from './types'
 import { format, parseISO } from 'date-fns'
 import ImagePickerAvatar from './components/ImagePickerAvatar'
 import { FormProvider, useForm } from 'react-hook-form'
+import BirthdayFields from './BirthdayFields'
+import GuessBirthdayFields from './GuessBirthdayFields'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -18,6 +20,41 @@ interface FormValues {
   birthYear: number
   birthMonth: number
   birthDay: number
+}
+
+const formRules = {
+  name: {required: '入力必須です'},
+  birthYear: {
+    required: '入力必須です',
+    valueAsNumber: true,
+    min: {
+      value: 0,
+      message: '0より大きい数を入力してください'
+    },
+  },
+  birthMonth: {
+    required: '入力必須です',
+    valueAsNumber: true,
+    min: {
+      value: 1,
+      message: '1より大きい数を入力してください'
+    },
+    max: {
+      value: 12,
+      message: '12より小さい数を入力してください'
+    },
+  },
+  birthDay:{
+    valueAsNumber: true,
+    min: {
+      value: 1,
+      message: '1より大きい数を入力してください'
+    },
+    max: {
+      value: 31,
+      message: '31より小さい数を入力してください'
+    },
+  }
 }
 
 const ComposeScreen: React.FC = () => {
@@ -77,62 +114,10 @@ const ComposeScreen: React.FC = () => {
             label="名前"
             name="name"
             defaultValue=""
-            rules={{required: '入力必須です'}}
+            rules={formRules.name}
           />
-          <View style={styles.birthContainer}>
-            <FormTextInput
-              style={styles.birthYearInput}
-              label="年"
-              name="birthYear"
-              defaultValue=""
-              rules={{
-                required: '入力必須です',
-                valueAsNumber: true,
-                min: {
-                  value: 0,
-                  message: '0より大きい数を入力してください'
-                }
-              }}
-              numeric
-            />
-            <FormTextInput
-              style={styles.birthInput}
-              label="月"
-              name="birthMonth"
-              defaultValue=""
-              rules={{
-                required: '入力必須です',
-                valueAsNumber: true,
-                min: {
-                  value: 1,
-                  message: '1より大きい数を入力してください'
-                },
-                max: {
-                  value: 12,
-                  message: '12より小さい数を入力してください'
-                },
-              }}
-              numeric
-            />
-            <FormTextInput
-              style={styles.birthInput}
-              label="日"
-              name="birthDay"
-              defaultValue=""
-              rules={{
-                valueAsNumber: true,
-                min: {
-                  value: 1,
-                  message: '1より大きい数を入力してください'
-                },
-                max: {
-                  value: 31,
-                  message: '31より小さい数を入力してください'
-                },
-              }}
-              numeric
-            />
-          </View>
+          <BirthdayFields />
+          <GuessBirthdayFields />
           <FormTextInput
             label="メモ"
             name="memo"
@@ -156,7 +141,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  birthContainer: {
+  birthRow: {
     flexDirection: "row",
     marginRight: -20,
     marginLeft: 10,
@@ -171,6 +156,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginLeft: -10,
   },
+  guessRow: {
+    flexDirection: "row"
+  }
 })
 
 export default ComposeScreen
