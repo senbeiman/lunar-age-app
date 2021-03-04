@@ -11,6 +11,7 @@ import ImagePickerAvatar from './components/ImagePickerAvatar'
 import { FormProvider, useForm } from 'react-hook-form'
 import BirthdayFields from './BirthdayFields'
 import GuessBirthdayFields from './GuessBirthdayFields'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -106,33 +107,45 @@ const ComposeScreen: React.FC = () => {
     )
   }
   return (
-    <View style={styles.container}>
-      <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
-      <KeyboardAvoidingView>
+    <KeyboardAvoidingView style={styles.container}>
+      <ScrollView>
         <FormProvider {...methods} >
-          <FormTextInput
-            label="名前"
-            name="name"
-            defaultValue=""
-            rules={formRules.name}
-          />
-          <BirthdayFields />
-          <GuessBirthdayFields />
-          <FormTextInput
-            label="メモ"
-            name="memo"
-            defaultValue=""
-            multiline
-          />
+          <View style={styles.nameRow}>
+            <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
+            <View style={styles.nameField}>
+              <Text>名前</Text>
+              <FormTextInput
+                name="name"
+                defaultValue=""
+                rules={formRules.name}
+              />
+            </View>
+          </View>
+          <View>
+            <Text>生年月日</Text>
+            <BirthdayFields />
+          </View>
+          <View>
+            <Text>生年月日逆算</Text>
+            <GuessBirthdayFields />
+          </View>
+          <View>
+            <Text>メモ</Text>
+            <FormTextInput
+              name="memo"
+              defaultValue=""
+              multiline
+              numberOfLines={5}
+            />
+          </View>
           <Button
             mode="contained"
             onPress={methods.handleSubmit(onPressSave)} 
           >保存
           </Button>
-
         </FormProvider>
-      </KeyboardAvoidingView>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
@@ -141,23 +154,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  birthRow: {
+  nameRow: {
     flexDirection: "row",
-    marginRight: -20,
-    marginLeft: 10,
+    alignItems: "center",
   },
-  birthYearInput: {
-    flex: 2,
-    marginRight: 20,
-    marginLeft: -10,
-  },
-  birthInput: {
+  nameField: {
     flex: 1,
-    marginRight: 20,
-    marginLeft: -10,
-  },
-  guessRow: {
-    flexDirection: "row"
   }
 })
 

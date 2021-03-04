@@ -6,14 +6,14 @@ import { ErrorMessage } from '@hookform/error-message'
 
 interface Props {
   name: string
-  label: string
   rules?: object
   defaultValue: string
   numeric?: boolean
   style?: any
+  numberOfLines?: number
   multiline?: boolean
 }
-const FormTextInput: React.FC<Props> = ({ style, name, label, rules, defaultValue, numeric, multiline}) => {
+const FormTextInput: React.FC<Props> = ({ numberOfLines, style, name, rules, defaultValue, numeric, multiline}) => {
   const { control, errors } = useFormContext()
   return (
     <View style={style}>
@@ -21,14 +21,14 @@ const FormTextInput: React.FC<Props> = ({ style, name, label, rules, defaultValu
         control={control}
         render={({ onChange, onBlur, value }) => (
             <TextInput
-              mode="outlined"
-              label={label}
               onChangeText={value => onChange(value)}
+              dense
               onBlur={onBlur}
               error={errors[name]}
               value={value}
               keyboardType={numeric ? "numeric" : "default"}
               multiline={multiline}
+              numberOfLines={numberOfLines}
             />
         )}
         name={name}

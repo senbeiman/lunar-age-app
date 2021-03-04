@@ -45,7 +45,8 @@ const ImagePickerAvatar: React.FC<Props> = ({ imageUri, onPick }) => {
 
 const styles = StyleSheet.create({
   avatar: {
-    alignSelf: "center"
+    alignSelf: "center",
+    margin: 12,
   },
 })
 

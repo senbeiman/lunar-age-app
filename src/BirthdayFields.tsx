@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import FormTextInput from './components/FormTextInput'
-import { useForm } from 'react-hook-form'
+import { Text } from 'react-native-paper'
 
 const formRules = {
   birthYear: {
@@ -42,28 +42,28 @@ const BirthdayFields: React.FC = () => {
     <View style={styles.container}>
       <FormTextInput
         style={styles.birthYearInput}
-        label="年"
         name="birthYear"
         defaultValue=""
         rules={formRules.birthYear}
         numeric
       />
+      <Text>年</Text>
       <FormTextInput
         style={styles.birthInput}
-        label="月"
         name="birthMonth"
         defaultValue=""
         rules={formRules.birthMonth}
         numeric
       />
+      <Text>月</Text>
       <FormTextInput
         style={styles.birthInput}
-        label="日"
         name="birthDay"
         defaultValue=""
         rules={formRules.birthDay}
         numeric
       />
+      <Text>日</Text>
     </View>
   )
 }
@@ -71,22 +71,14 @@ const BirthdayFields: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    marginRight: -20,
-    marginLeft: 10,
+    alignItems: "flex-end"
   },
   birthYearInput: {
     flex: 2,
-    marginRight: 20,
-    marginLeft: -10,
   },
   birthInput: {
     flex: 1,
-    marginRight: 20,
-    marginLeft: -10,
   },
-  guessRow: {
-    flexDirection: "row"
-  }
 })
 
 export default BirthdayFields

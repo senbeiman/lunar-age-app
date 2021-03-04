@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 import FormTextInput from './components/FormTextInput'
 import { Button, Text } from 'react-native-paper'
 import { useFormContext } from 'react-hook-form'
-import { format, getMonth, getYear, sub } from 'date-fns'
+import { format, sub } from 'date-fns'
 
 const rules = {
   guessYear: {
@@ -37,7 +37,6 @@ const GuessBirthdayFields: React.FC = () => {
         <View style={styles.row}>
           <FormTextInput
             style={styles.birthYearInput}
-            label="年"
             name="guessYear"
             defaultValue=""
             rules={rules.guessYear}
@@ -46,7 +45,6 @@ const GuessBirthdayFields: React.FC = () => {
           <Text>年</Text>
           <FormTextInput
             style={styles.birthInput}
-            label="月"
             name="guessMonth"
             defaultValue=""
             rules={rules.guessMonth}
@@ -57,7 +55,6 @@ const GuessBirthdayFields: React.FC = () => {
         <View style={styles.row}>
           <FormTextInput
             style={styles.birthInput}
-            label="歳"
             name="guessAgeYears"
             defaultValue=""
             rules={rules.guessAgeYears}
@@ -66,7 +63,6 @@ const GuessBirthdayFields: React.FC = () => {
           <Text>歳</Text>
           <FormTextInput
             style={styles.birthInput}
-            label="ヶ月"
             name="guessAgeMonths"
             defaultValue=""
             rules={rules.guessAgeMonths}
