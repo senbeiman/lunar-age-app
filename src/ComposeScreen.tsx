@@ -1,64 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, View, Image } from 'react-native'
-import { Avatar, Button } from 'react-native-paper'
+import { Button } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import * as yup from 'yup'
-import { Formik } from 'formik'
-import FormikTextInput from './components/FormikTextInput'
+import FormTextInput from './components/FormTextInput'
 import { formatISO } from 'date-fns'
 import { RouteParamList } from './types'
 import { format, parseISO } from 'date-fns'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import * as ImagePicker from 'expo-image-picker'
+import ImagePickerAvatar from './components/ImagePickerAvatar'
+import { FormProvider, useForm } from 'react-hook-form'
 
 const db = SQLite.openDatabase('db.db')
-
-const validationSchema = yup.object().shape({
-  name: yup
-    .string()
-    .required('Name is required'),
-  birthYear: yup
-    .number()
-    .required('birth year is required'),
-  birthMonth: yup
-    .number()
-    .max(12)
-    .min(1)
-    .required('birth month is required'),
-  birthDay: yup
-    .number()
-    .max(31)
-    .min(1),
-})
 
 interface FormValues {
   name: string
   memo: string
-  birthYear: string
-  birthMonth: string
-  birthDay: string
+  birthYear: number
+  birthMonth: number
+  birthDay: number
 }
 
-const defaultValues = {
-    name: '',
-    memo: '',
-    birthYear: '',
-    birthMonth: '',
-    birthDay: '',
-} 
-const ComposeScreen = () => {
+const ComposeScreen: React.FC = () => {
   const navigation = useNavigation()
   const { params } = useRoute<RouteProp<RouteParamList, 'Details'>>()
-  const [initialValues, setInitialValues] = useState(defaultValues) 
   const itemId = params?.itemId
   const [imageUri, setImageUri] = useState<string | null>(null)
+  const methods = useForm()
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      console.log(itemId)
       if (!itemId) {
-        setInitialValues(defaultValues)
+        methods.reset()
         setImageUri(null)
         return
       }
@@ -70,7 +42,7 @@ const ComposeScreen = () => {
           (_, { rows } ) => {
             const dbItem = rows._array.find(row => row.id === itemId)
             const birthday = parseISO(dbItem.birthday)
-            setInitialValues({
+            methods.reset({
               name: dbItem.name,
               memo: dbItem.memo,
               birthYear: format(birthday, "yyyy"),
@@ -85,7 +57,7 @@ const ComposeScreen = () => {
   }, [navigation])
   const onPressSave = (values: FormValues) => {
     const hasDay = values.birthDay ? 1 : 0
-    const birthday = formatISO(new Date(Number(values.birthYear), Number(values.birthMonth) - 1, hasDay ? Number(values.birthDay) : 1), { representation: 'date'})
+    const birthday = formatISO(new Date(values.birthYear, values.birthMonth - 1, hasDay ? values.birthDay : 1), { representation: 'date'})
     db.transaction(
       tx => {
         itemId ? 
@@ -96,84 +68,85 @@ const ComposeScreen = () => {
       () => {navigation.goBack()}
     )
   }
-  const pickImage = async () => {
-    if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
-        return
-      }
-    }
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0,
-      base64: true
-    })
-
-    console.log(result);
-
-    if (!result.cancelled) {
-      setImageUri(`data:image/jpeg;base64,${result.base64}`);
-    }
-  }
-  // TODO: rewrite form with react hook form
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={pickImage}>
-        {imageUri ? 
-        <Avatar.Image size={100} style={{alignSelf: "center"}} source={{
-          uri: imageUri
-        }}/> :
-        <Avatar.Icon size={100} icon="account" style={{alignSelf: "center"}}/>}
-      </TouchableOpacity>
-      <Formik
-        initialValues={initialValues} 
-        enableReinitialize
-        validationSchema={validationSchema}
-        onSubmit={values => onPressSave(values)}
-      >
-        {({ handleSubmit }) => (
-          <KeyboardAvoidingView>
-            <FormikTextInput
-              label="名前"
-              name="name"
+      <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
+      <KeyboardAvoidingView>
+        <FormProvider {...methods} >
+          <FormTextInput
+            label="名前"
+            name="name"
+            defaultValue=""
+            rules={{required: '入力必須です'}}
+          />
+          <View style={styles.birthContainer}>
+            <FormTextInput
+              style={styles.birthYearInput}
+              label="年"
+              name="birthYear"
+              defaultValue=""
+              rules={{
+                required: '入力必須です',
+                valueAsNumber: true,
+                min: {
+                  value: 0,
+                  message: '0より大きい数を入力してください'
+                }
+              }}
+              numeric
             />
-            <View style={styles.birthContainer}>
-              <FormikTextInput
-                style={styles.birthYearInput}
-                label="年"
-                name="birthYear"
-                numeric
-              />
-              <FormikTextInput
-                style={styles.birthInput}
-                label="月"
-                name="birthMonth"
-                numeric
-              />
-              <FormikTextInput
-                style={styles.birthInput}
-                label="日"
-                name="birthDay"
-                numeric
-              />
-            </View>
-            <FormikTextInput
-              label="メモ"
-              name="memo"
-              multiline
+            <FormTextInput
+              style={styles.birthInput}
+              label="月"
+              name="birthMonth"
+              defaultValue=""
+              rules={{
+                required: '入力必須です',
+                valueAsNumber: true,
+                min: {
+                  value: 1,
+                  message: '1より大きい数を入力してください'
+                },
+                max: {
+                  value: 12,
+                  message: '12より小さい数を入力してください'
+                },
+              }}
+              numeric
             />
-            <Button
-              mode="contained"
-              onPress={handleSubmit} 
-            >保存
-            </Button>
-          </KeyboardAvoidingView>
-        )}
-      </Formik>
+            <FormTextInput
+              style={styles.birthInput}
+              label="日"
+              name="birthDay"
+              defaultValue=""
+              rules={{
+                valueAsNumber: true,
+                min: {
+                  value: 1,
+                  message: '1より大きい数を入力してください'
+                },
+                max: {
+                  value: 31,
+                  message: '31より小さい数を入力してください'
+                },
+              }}
+              numeric
+            />
+          </View>
+          <FormTextInput
+            label="メモ"
+            name="memo"
+            defaultValue=""
+            multiline
+          />
+          <Button
+            mode="contained"
+            onPress={methods.handleSubmit(onPressSave)} 
+          >保存
+          </Button>
 
+        </FormProvider>
+      </KeyboardAvoidingView>
     </View>
   )
 }
