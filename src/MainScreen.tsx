@@ -2,11 +2,13 @@ import { useNavigation } from '@react-navigation/native'
 import { parseISO } from 'date-fns'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
-import { Avatar, FAB, List } from 'react-native-paper'
+import { FAB, List } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import AgeText from './components/AgeText'
 import { DbRows } from './types'
+import AvatarImageSmall from './components/AvatarImageSmall'
+import AvatarDefaultSmall from './components/AvatarDefaultSmall'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -62,10 +64,8 @@ const MainScreen: React.FC = () => {
               description={item.memo}
               left={() => 
                       item.image ? 
-                      <Avatar.Image size={50} source={{
-                        uri: item.image
-                      }}/> :
-                      <Avatar.Icon size={50} icon="account" />
+                      <AvatarImageSmall source={item.image}/> :
+                      <AvatarDefaultSmall />
                     }
               right={(props) => <AgeText {...props} date={item.birthday} />}
             />

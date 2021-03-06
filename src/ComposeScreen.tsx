@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { KeyboardAvoidingView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Button, Text } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
@@ -108,45 +108,44 @@ const ComposeScreen: React.FC = () => {
     )
   }
   return (
-    <KeyboardAvoidingView style={styles.container}>
-      <ScrollView>
-        <FormProvider {...methods} >
-          <View style={styles.nameRow}>
-            <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
-            <View style={styles.nameField}>
-              <Text>名前</Text>
-              <FormTextInput
-                name="name"
-                defaultValue=""
-                rules={formRules.name}
-              />
-            </View>
+    <FormProvider {...methods} >
+      <View style={styles.container}>
+        <View style={styles.nameRow}>
+          <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
+          <View style={styles.nameField}>
+            <Text>名前</Text>
+            <FormTextInput
+              name="name"
+              defaultValue=""
+              rules={formRules.name}
+            />
           </View>
-          <View>
-            <Text>生年月日</Text>
-            <BirthdayFields />
-          </View>
-          <View>
-            <Text>生年月日逆算</Text>
-            <GuessBirthdayFields />
-          </View>
-          <View>
-            <Text>メモ</Text>
+        </View>
+        <View>
+          <Text>生年月日</Text>
+          <BirthdayFields />
+        </View>
+        <View>
+          <Text>生年月日逆算</Text>
+          <GuessBirthdayFields />
+        </View>
+        <View style={styles.memoField}>
+          <Text>メモ</Text>
+          <ScrollView>
             <FormTextInput
               name="memo"
               defaultValue=""
               multiline
-              numberOfLines={5}
             />
-          </View>
-          <Button
-            mode="contained"
-            onPress={methods.handleSubmit(onPressSave)} 
-          >保存
-          </Button>
-        </FormProvider>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          </ScrollView>
+        </View>
+        <Button
+          mode="contained"
+          onPress={methods.handleSubmit(onPressSave)} 
+        >保存
+        </Button>
+      </View>
+    </FormProvider>
   )
 }
 
@@ -161,6 +160,10 @@ const styles = StyleSheet.create({
   },
   nameField: {
     flex: 1,
+  },
+  memoField: {
+    flex: 1,
+    marginVertical: 16
   }
 })
 

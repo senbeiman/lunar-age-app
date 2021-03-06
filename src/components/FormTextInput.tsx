@@ -10,10 +10,9 @@ interface Props {
   defaultValue: string
   numeric?: boolean
   style?: any
-  numberOfLines?: number
   multiline?: boolean
 }
-const FormTextInput: React.FC<Props> = ({ numberOfLines, style, name, rules, defaultValue, numeric, multiline}) => {
+const FormTextInput: React.FC<Props> = ({ style, name, rules, defaultValue, numeric, multiline}) => {
   const { control, errors } = useFormContext()
   return (
     <View style={style}>
@@ -28,7 +27,7 @@ const FormTextInput: React.FC<Props> = ({ numberOfLines, style, name, rules, def
               value={value}
               keyboardType={numeric ? "numeric" : "default"}
               multiline={multiline}
-              numberOfLines={numberOfLines}
+              numberOfLines={multiline ? 5 : undefined}
             />
         )}
         name={name}

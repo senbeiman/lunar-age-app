@@ -2,10 +2,12 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { parseISO, format } from 'date-fns'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
-import { Paragraph, Text, Title, Button, IconButton, Menu, Provider, Portal, Dialog, Avatar } from 'react-native-paper'
+import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import AgeText from './components/AgeText'
 import { RouteParamList, DbRows } from './types'
+import AvatarDefaultLarge from './components/AvatarDefaultLarge'
+import AvatarImageLarge from './components/AvatarImageLarge'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -70,12 +72,13 @@ const DetailsScreen: React.FC = () => {
   }
   return (
     <View style={styles.container}>
-      {item.image ? 
-      <Avatar.Image size={100} style={{alignSelf: "center"}} source={{
-        uri: item.image
-      }}/> :
-      <Avatar.Icon size={100} icon="account" style={{alignSelf: "center"}}/>}
-      <Title>{item.name}</Title>
+      <View style={styles.row}>
+        {item.image ? 
+        <AvatarImageLarge source={item.image} />
+        :
+        <AvatarDefaultLarge />}
+        <Title>{item.name}</Title>
+      </View>
       <Text>{format(item.birthday, "yyyy年M月")}{item.hasDay && format(item.birthday, "d日")}生まれ</Text>
       <AgeText date={item.birthday}/>
       <Paragraph>{item.memo}</Paragraph>
@@ -117,6 +120,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 })
 
