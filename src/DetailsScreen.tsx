@@ -5,7 +5,7 @@ import { Dimensions, StyleSheet, View } from 'react-native'
 import { Paragraph, Text, Title, Button, IconButton, Menu, Provider, Portal, Dialog, Avatar } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import AgeText from './components/AgeText'
-import { RouteParamList } from './types'
+import { RouteParamList, DbRows } from './types'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -43,7 +43,8 @@ const DetailsScreen: React.FC = () => {
           [itemId],
           (_, { rows } ) => {
             console.log(rows)
-            const dbItem = rows._array.find(row => row.id === itemId)
+            const dbItem = (rows as unknown as DbRows)._array.find(row => row.id === itemId)
+            if (!dbItem) return
             const parsedItem = {...dbItem, birthday: parseISO(dbItem.birthday), hasDay: Boolean(dbItem.has_day)}
             setItem(parsedItem)
           })

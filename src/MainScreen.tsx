@@ -6,6 +6,7 @@ import { Avatar, FAB, List } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import AgeText from './components/AgeText'
+import { DbRows } from './types'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -31,8 +32,8 @@ const MainScreen: React.FC = () => {
           'select * from items',
           [],
           (_, { rows } ) => {
-            const items = rows._array.map(item => {
-              return {...item, birthday: parseISO(item.birthday), hasDay: Boolean(item.hasDay)}
+            const items = (rows as unknown as DbRows)._array.map(item => {
+              return {...item, birthday: parseISO(item.birthday), hasDay: Boolean(item.has_day)}
             })
             setItems(items)
           }

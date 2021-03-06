@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, View, Image } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, View } from 'react-native'
 import { Button, Text } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import FormTextInput from './components/FormTextInput'
 import { formatISO } from 'date-fns'
-import { RouteParamList } from './types'
+import { DbRows, RouteParamList } from './types'
 import { format, parseISO } from 'date-fns'
 import ImagePickerAvatar from './components/ImagePickerAvatar'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -78,7 +78,8 @@ const ComposeScreen: React.FC = () => {
           'select * from items where id = ?;',
           [itemId],
           (_, { rows } ) => {
-            const dbItem = rows._array.find(row => row.id === itemId)
+            const dbItem = (rows as unknown as DbRows)._array.find((row: { id: number }) => row.id === itemId)
+            if (!dbItem) return
             const birthday = parseISO(dbItem.birthday)
             methods.reset({
               name: dbItem.name,
