@@ -8,29 +8,46 @@ import { format, sub } from 'date-fns'
 const rules = {
   guessYear: {
     valueAsNumber: true,
+    required: '入力必須です',
+    min: {
+      value: 0,
+      message: '0以上を入力してください'
+    },
   },
   guessMonth: {
     valueAsNumber: true,
+    required: '入力必須です',
+    min: {
+      value: 1,
+      message: '1以上を入力してください'
+    },
+    max: {
+      value: 12,
+      message: '12以下を入力してください'
+    },
   },
   guessAgeYears: {
     valueAsNumber: true,
+    required: '入力必須です',
+    min: {
+      value: 0,
+      message: '0以上を入力してください'
+    },
   },
   guessAgeMonths: {
     valueAsNumber: true,
+    required: '入力必須です',
+    min: {
+      value: 0,
+      message: '0以上を入力してください'
+    },
+    max: {
+      value: 11,
+      message: '11以下を入力してください'
+    },
   },
 }
 const GuessBirthdayFields: React.FC = () => {
-  const { setValue, getValues } = useFormContext()
-  const onPress = () => {
-    const values = getValues()
-    const guessDate = new Date(values.guessYear, values.guessMonth - 1)
-    const guessedDate = sub(guessDate, {
-      years: values.guessAgeYears,
-      months: values.guessAgeMonths
-    })
-    setValue("birthYear", format(guessedDate, "yyyy"))
-    setValue("birthMonth", format(guessedDate, "M"))
-  }
   return (
     <View style={styles.row}>
       <View style={styles.inputFields}>
@@ -71,10 +88,6 @@ const GuessBirthdayFields: React.FC = () => {
           <Text>ヶ月だった</Text>
         </View>
       </View>
-      <Button
-        mode="contained" 
-        onPress={onPress}
-      >逆算</Button>
     </View>
   )
 }
@@ -82,7 +95,8 @@ const GuessBirthdayFields: React.FC = () => {
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
-    alignItems: "flex-end"
+    alignItems: "flex-end",
+    marginBottom: 16
   },
   inputFields: {
     flex: 1

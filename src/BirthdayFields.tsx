@@ -9,7 +9,7 @@ const formRules = {
     valueAsNumber: true,
     min: {
       value: 0,
-      message: '0より大きい数を入力してください'
+      message: '0以上を入力してください'
     },
   },
   birthMonth: {
@@ -17,22 +17,22 @@ const formRules = {
     valueAsNumber: true,
     min: {
       value: 1,
-      message: '1より大きい数を入力してください'
+      message: '1以上を入力してください'
     },
     max: {
       value: 12,
-      message: '12より小さい数を入力してください'
+      message: '12以下を入力してください'
     },
   },
   birthDay:{
     valueAsNumber: true,
     min: {
       value: 1,
-      message: '1より大きい数を入力してください'
+      message: '1以上を入力してください'
     },
     max: {
       value: 31,
-      message: '31より小さい数を入力してください'
+      message: '31以下を入力してください'
     },
   }
 }

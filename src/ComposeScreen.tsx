@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Button, Text } from 'react-native-paper'
+import { Button, Dialog, Portal, Text } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import FormTextInput from './components/FormTextInput'
-import { formatISO } from 'date-fns'
+import { formatISO, sub } from 'date-fns'
 import { DbRows, RouteParamList } from './types'
 import { format, parseISO } from 'date-fns'
 import ImagePickerAvatar from './components/ImagePickerAvatar'
@@ -25,37 +25,6 @@ interface FormValues {
 
 const formRules = {
   name: {required: '入力必須です'},
-  birthYear: {
-    required: '入力必須です',
-    valueAsNumber: true,
-    min: {
-      value: 0,
-      message: '0より大きい数を入力してください'
-    },
-  },
-  birthMonth: {
-    required: '入力必須です',
-    valueAsNumber: true,
-    min: {
-      value: 1,
-      message: '1より大きい数を入力してください'
-    },
-    max: {
-      value: 12,
-      message: '12より小さい数を入力してください'
-    },
-  },
-  birthDay:{
-    valueAsNumber: true,
-    min: {
-      value: 1,
-      message: '1より大きい数を入力してください'
-    },
-    max: {
-      value: 31,
-      message: '31より小さい数を入力してください'
-    },
-  }
 }
 
 const ComposeScreen: React.FC = () => {
@@ -63,12 +32,15 @@ const ComposeScreen: React.FC = () => {
   const { params } = useRoute<RouteProp<RouteParamList, 'Details'>>()
   const itemId = params?.itemId
   const [imageUri, setImageUri] = useState<string | null>(null)
-  const methods = useForm()
+  const mainFormMethods = useForm({mode: "onBlur"})
+  const dialogFormMethods = useForm({mode: "onBlur"})
+  const [dialogVisible, setDialogVisible] = useState(false)
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       if (!itemId) {
-        methods.reset()
+        mainFormMethods.reset()
+        dialogFormMethods.reset()
         setImageUri(null)
         return
       }
@@ -81,7 +53,7 @@ const ComposeScreen: React.FC = () => {
             const dbItem = (rows as unknown as DbRows)._array.find((row: { id: number }) => row.id === itemId)
             if (!dbItem) return
             const birthday = parseISO(dbItem.birthday)
-            methods.reset({
+            mainFormMethods.reset({
               name: dbItem.name,
               memo: dbItem.memo,
               birthYear: format(birthday, "yyyy"),
@@ -107,45 +79,71 @@ const ComposeScreen: React.FC = () => {
       () => {navigation.goBack()}
     )
   }
+  const onPressCalculate = () => {
+    const values = dialogFormMethods.getValues()
+    const guessDate = new Date(values.guessYear, values.guessMonth - 1)
+    const guessedDate = sub(guessDate, {
+      years: values.guessAgeYears,
+      months: values.guessAgeMonths
+    })
+    mainFormMethods.setValue("birthYear", format(guessedDate, "yyyy"))
+    mainFormMethods.setValue("birthMonth", format(guessedDate, "M"))
+    setDialogVisible(false)
+  }
   return (
-    <FormProvider {...methods} >
-      <View style={styles.container}>
-        <View style={styles.nameRow}>
-          <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
-          <View style={styles.nameField}>
-            <Text>名前</Text>
-            <FormTextInput
-              name="name"
-              defaultValue=""
-              rules={formRules.name}
-            />
+    <View style={styles.container}>
+      <FormProvider {...mainFormMethods} >
+        <View style={styles.main}>
+          <View style={styles.nameRow}>
+            <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
+            <View style={styles.nameField}>
+              <Text>名前</Text>
+              <FormTextInput
+                name="name"
+                defaultValue=""
+                rules={formRules.name}
+              />
+            </View>
           </View>
+          <View>
+            <View style={styles.birthRow}>
+              <Text>生年月日</Text>
+              <Button onPress={() => {setDialogVisible(true)}}>逆算する</Button>
+            </View>
+            <BirthdayFields />
+          </View>
+          <View style={styles.memoField}>
+            <Text>メモ</Text>
+            <ScrollView>
+              <FormTextInput
+                name="memo"
+                defaultValue=""
+                multiline
+              />
+            </ScrollView>
+          </View>
+          <Button
+            mode="contained"
+            onPress={mainFormMethods.handleSubmit(onPressSave)} 
+          >保存
+          </Button>
         </View>
-        <View>
-          <Text>生年月日</Text>
-          <BirthdayFields />
-        </View>
-        <View>
-          <Text>生年月日逆算</Text>
-          <GuessBirthdayFields />
-        </View>
-        <View style={styles.memoField}>
-          <Text>メモ</Text>
-          <ScrollView>
-            <FormTextInput
-              name="memo"
-              defaultValue=""
-              multiline
-            />
-          </ScrollView>
-        </View>
-        <Button
-          mode="contained"
-          onPress={methods.handleSubmit(onPressSave)} 
-        >保存
-        </Button>
-      </View>
-    </FormProvider>
+      </FormProvider>
+        <Portal>
+          <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+            <Dialog.Title>生年月日逆算</Dialog.Title>
+            <Dialog.Content>
+              <FormProvider {...dialogFormMethods} >
+                <GuessBirthdayFields />
+              </FormProvider>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setDialogVisible(false)}>キャンセル</Button>
+              <Button onPress={dialogFormMethods.handleSubmit(onPressCalculate)}>逆算</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+    </View>
   )
 }
 
@@ -153,6 +151,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  main: {
+    flex: 1
+  },
+  birthRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   nameRow: {
     flexDirection: "row",
@@ -164,6 +170,16 @@ const styles = StyleSheet.create({
   memoField: {
     flex: 1,
     marginVertical: 16
+  },
+  guessContainer: {
+    backgroundColor: "white",
+    padding: 16,
+    borderRadius: 5,
+  },
+  triangle: {
+    backgroundColor: "white",
+    width: 10,
+    height: 10
   }
 })
 
