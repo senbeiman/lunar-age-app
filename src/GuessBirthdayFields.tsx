@@ -1,9 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import FormTextInput from './components/FormTextInput'
-import { Button, Text } from 'react-native-paper'
-import { useFormContext } from 'react-hook-form'
-import { format, sub } from 'date-fns'
+import { Text } from 'react-native-paper'
 
 const rules = {
   guessYear: {

@@ -1,6 +1,5 @@
 import React from 'react'
 import { Platform, StyleSheet } from 'react-native'
-import { Avatar } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker'
 import AvatarDefaultLarge from './AvatarDefaultLarge'
