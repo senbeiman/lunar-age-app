@@ -13,3 +13,11 @@ export type DbRows  = {
     image: string
   }[]
 }
+export interface Item {
+  id: number
+  name: string
+  memo: string
+  birthday: Date
+  hasDay: boolean
+  image: string
+}

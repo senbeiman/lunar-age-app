@@ -36,6 +36,7 @@ const ComposeScreen: React.FC = () => {
   const dialogFormMethods = useForm({mode: "onBlur"})
   const [dialogVisible, setDialogVisible] = useState(false)
 
+// TODO: integrate error messages into one snackbar
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       if (!itemId) {
@@ -66,19 +67,26 @@ const ComposeScreen: React.FC = () => {
       })
     return unsubscribe
   }, [navigation])
+
   const onPressSave = (values: FormValues) => {
     const hasDay = values.birthDay ? 1 : 0
-    const birthday = formatISO(new Date(values.birthYear, values.birthMonth - 1, hasDay ? values.birthDay : 1), { representation: 'date'})
+    const birthdayDate = new Date(values.birthYear, values.birthMonth - 1, hasDay ? values.birthDay : 1)
+    if (birthdayDate > new Date()) {
+      mainFormMethods.setError("birthYear", { message: "未来の日付は設定できません" })
+      return
+    }
+    const birthdayString = formatISO(birthdayDate, { representation: 'date'})
     db.transaction(
       tx => {
         itemId ? 
-          tx.executeSql(`update items set name = ?, memo = ?, has_day = ?, birthday = ?, image = ? where id = ?`, [values.name, values.memo, hasDay, birthday, imageUri, itemId]) :
-          tx.executeSql(`insert into items (name, memo, has_day, birthday, image) values (?, ?, ?, ?, ?)`, [values.name, values.memo, hasDay, birthday, imageUri])
+          tx.executeSql(`update items set name = ?, memo = ?, has_day = ?, birthday = ?, image = ? where id = ?`, [values.name, values.memo, hasDay, birthdayString, imageUri, itemId]) :
+          tx.executeSql(`insert into items (name, memo, has_day, birthday, image) values (?, ?, ?, ?, ?)`, [values.name, values.memo, hasDay, birthdayString, imageUri])
       },
       () => {console.log('error')}, // TODO: displaying error on screen
       () => {navigation.goBack()}
     )
   }
+
   const onPressCalculate = () => {
     const values = dialogFormMethods.getValues()
     const guessDate = new Date(values.guessYear, values.guessMonth - 1)
@@ -90,6 +98,7 @@ const ComposeScreen: React.FC = () => {
     mainFormMethods.setValue("birthMonth", format(guessedDate, "M"))
     setDialogVisible(false)
   }
+
   return (
     <View style={styles.container}>
       <FormProvider {...mainFormMethods} >
