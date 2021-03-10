@@ -1,21 +1,15 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
-import { Title, Text } from 'react-native-paper'
-import AvatarDefaultSmall from './components/AvatarDefaultSmall'
-import AvatarImageSmall from './components/AvatarImageSmall'
-import { Item } from './types'
+import { FlatList } from 'react-native'
+import AgeAccordionList from './AgeAccordionList'
+import { Item, YearItem } from './types'
 import { getAgeFromBirthday } from './utils'
 
-interface ItemWithAge extends Item {
-  diffInMonth: number
-  year: number
-  month: number
-}
 const AgeTable: React.FC<{ items: Item[] }> = ({ items }) => {
+
   if (items.length === 0) {
     return null
   }
+
   const sortedItems = [...items].sort((a, b) => a.birthday < b.birthday ? 1 : -1)
   const sortedItemsWithAge = sortedItems.map(item => {
     const { year, month, diffInMonth } = getAgeFromBirthday(item.birthday)
@@ -26,43 +20,35 @@ const AgeTable: React.FC<{ items: Item[] }> = ({ items }) => {
       month
     }
   })
-  const maxAgeInMonths = sortedItemsWithAge[sortedItemsWithAge.length - 1].diffInMonth + 1
-  const itemTable: ItemWithAge[][] = new Array(maxAgeInMonths).fill(0).map(() => [])
+  const maxYear = sortedItemsWithAge[sortedItemsWithAge.length - 1].year
+  const itemTable: YearItem[] = new Array(maxYear + 1).fill(0).map((_, index) => (
+    { label: `${index}歳`, array: new Array(12).fill(0).map((_, index) => (
+      { label: `${index}ヶ月`, items: []}
+    ))}
+  ))
   sortedItemsWithAge.forEach(item => {
-    itemTable[item.diffInMonth].push(item)
+    itemTable[item.year].array[item.month].items.push(item)
   })
+  const itemTableWithCount = itemTable.map(yearItem =>(
+    {
+      ...yearItem,
+      itemCount: yearItem.array.flatMap(monthItem =>
+        monthItem.items).length
+    }
+  ))
+  
   return (
-    <ScrollView>
-      {
-        itemTable.map((row, index) => (
-          <View key={index} style={styles.row}>
-            <Text>{Math.floor(index/12)}y{index%12}m</Text>
-            {row.map(item => (
-              <View key={item.id} style={styles.item}>
-                {item.image ? 
-                <AvatarImageSmall source={item.image}/> :
-                <AvatarDefaultSmall />}
-                <Title>{item.name}</Title>
-              </View>
-            ))}
-          </View>
-        ))
+    <FlatList
+      data={itemTableWithCount}
+      keyExtractor={(_, index) => `${index}`}
+      renderItem=
+      {({ item }) => {
+        return (
+          <AgeAccordionList item={item} expandedDefault={item.itemCount !== 0}/>
+        )}
       }
-      
-    </ScrollView>
+    />
   )
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  item: {
-    marginHorizontal: 12,
-    flexDirection: "row",
-    alignItems: "center"
-  }
-})
 
 export default AgeTable

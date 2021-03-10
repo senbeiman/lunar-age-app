@@ -52,9 +52,11 @@ const AgeList: React.FC<{items: Item[]}> = ({ items }) => {
         data={getSortedItems(sortSelected)}
         keyExtractor={item => `${item.id}`}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('Details', {
-            itemId: item.id
-          })}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Details', {
+              itemId: item.id
+            })}
+          >
             <List.Item
               title={item.name}
               description={item.memo}

@@ -21,3 +21,16 @@ export interface Item {
   hasDay: boolean
   image: string
 }
+interface ItemWithAge extends Item {
+  diffInMonth: number
+  year: number
+  month: number
+}
+export interface YearItem {
+  label: string
+  array: {
+    label: string
+    items: ItemWithAge[]
+  }[]
+  itemCount?: number
+}
