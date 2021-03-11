@@ -8,6 +8,8 @@ import { DbRows, Item } from '../../types'
 import AgeTable from './AgeTable'
 import AgeList from './AgeList'
 import ListToggleButtons from './ListToggleButtons'
+import { AdMobBanner } from 'expo-ads-admob'
+import { adUnitID } from '../../constants'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -21,7 +23,9 @@ const MainScreen: React.FC = () => {
       headerRight: () => (
         <ListToggleButtons 
           value={toggleValue} 
-          onValueChange={value => {setToggleValue(value)}}
+          onValueChange={value => {
+            const newValue = value || toggleValue
+            setToggleValue(newValue)}}
         />
       )
     })
@@ -62,10 +66,14 @@ const MainScreen: React.FC = () => {
         style={{
           position: 'absolute',
           right: 16,
-          bottom: 16,
+          bottom: 64,
         }} 
         icon="plus"
         onPress={onPressAdd}
+      />
+      <AdMobBanner
+        adUnitID={adUnitID}
+        servePersonalizedAds
       />
     </View>
   );

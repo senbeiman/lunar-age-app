@@ -12,6 +12,8 @@ import { FormProvider, useForm } from 'react-hook-form'
 import BirthdayFields from './BirthdayFields'
 import GuessBirthdayFields from './GuessBirthdayFields'
 import { ScrollView } from 'react-native-gesture-handler'
+import { AdMobBanner } from 'expo-ads-admob'
+import { adUnitID } from '../../constants'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -101,63 +103,72 @@ const ComposeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <FormProvider {...mainFormMethods} >
-        <View style={styles.main}>
-          <View style={styles.nameRow}>
-            <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
-            <View style={styles.nameField}>
-              <Text>名前</Text>
-              <FormTextInput
-                name="name"
-                defaultValue=""
-                rules={formRules.name}
-              />
+      <View style={styles.form}>
+        <FormProvider {...mainFormMethods} >
+          <View style={styles.main}>
+            <View style={styles.nameRow}>
+              <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
+              <View style={styles.nameField}>
+                <Text>名前</Text>
+                <FormTextInput
+                  name="name"
+                  defaultValue=""
+                  rules={formRules.name}
+                />
+              </View>
             </View>
-          </View>
-          <View>
-            <View style={styles.birthRow}>
-              <Text>生年月日</Text>
-              <Button onPress={() => {setDialogVisible(true)}}>逆算する</Button>
+            <View>
+              <View style={styles.birthRow}>
+                <Text>生年月日</Text>
+                <Button onPress={() => {setDialogVisible(true)}}>逆算する</Button>
+              </View>
+              <BirthdayFields />
             </View>
-            <BirthdayFields />
+            <View style={styles.memoField}>
+              <Text>メモ</Text>
+              <ScrollView>
+                <FormTextInput
+                  name="memo"
+                  defaultValue=""
+                  multiline
+                />
+              </ScrollView>
+            </View>
+            <Button
+              mode="contained"
+              onPress={mainFormMethods.handleSubmit(onPressSave)} 
+            >保存
+            </Button>
           </View>
-          <View style={styles.memoField}>
-            <Text>メモ</Text>
-            <ScrollView>
-              <FormTextInput
-                name="memo"
-                defaultValue=""
-                multiline
-              />
-            </ScrollView>
-          </View>
-          <Button
-            mode="contained"
-            onPress={mainFormMethods.handleSubmit(onPressSave)} 
-          >保存
-          </Button>
-        </View>
-      </FormProvider>
-        <Portal>
-          <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
-            <Dialog.Title>生年月日逆算</Dialog.Title>
-            <Dialog.Content>
-              <FormProvider {...dialogFormMethods} >
-                <GuessBirthdayFields />
-              </FormProvider>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={() => setDialogVisible(false)}>キャンセル</Button>
-              <Button onPress={dialogFormMethods.handleSubmit(onPressCalculate)}>逆算</Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
+        </FormProvider>
+          <Portal>
+            <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+              <Dialog.Title>生年月日逆算</Dialog.Title>
+              <Dialog.Content>
+                <FormProvider {...dialogFormMethods} >
+                  <GuessBirthdayFields />
+                </FormProvider>
+              </Dialog.Content>
+              <Dialog.Actions>
+                <Button onPress={() => setDialogVisible(false)}>キャンセル</Button>
+                <Button onPress={dialogFormMethods.handleSubmit(onPressCalculate)}>逆算</Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+      </View>
+      <AdMobBanner
+        adUnitID={adUnitID}
+        servePersonalizedAds
+      />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  form: {
     flex: 1,
     padding: 16,
   },

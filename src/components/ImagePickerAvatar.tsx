@@ -23,14 +23,13 @@ const ImagePickerAvatar: React.FC<Props> = ({ imageUri, onPick }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 0,
-      base64: true
+      quality: 1,
     })
 
     console.log(result);
 
     if (!result.cancelled) {
-      onPick(`data:image/jpeg;base64,${result.base64}`);
+      onPick(`${result.uri}`);
     }
   }
   return (

@@ -8,9 +8,19 @@ import AgeText from '../../components/AgeText'
 import { RouteParamList, DbRows } from '../../types'
 import AvatarDefaultLarge from '../../components/AvatarDefaultLarge'
 import AvatarImageLarge from '../../components/AvatarImageLarge'
+import * as FileSystem from 'expo-file-system'
+import { AdMobBanner } from 'expo-ads-admob'
+import { adUnitID } from '../../constants'
 
 const db = SQLite.openDatabase('db.db')
 
+const test = async () => {
+  const {uri} = await FileSystem.getInfoAsync('SQLite/db.db')
+  console.log(uri)
+}
+test()
+
+console.log()
 interface Item {
   id: number
   name: string
@@ -70,54 +80,64 @@ const DetailsScreen: React.FC = () => {
   if (!item) {
     return null
   }
+
   return (
     <View style={styles.container}>
-      <View style={styles.row}>
-        {item.image ? 
-        <AvatarImageLarge source={item.image} />
-        :
-        <AvatarDefaultLarge />}
-        <Title>{item.name}</Title>
+      <View style={styles.details}>
+        <View style={styles.row}>
+          {item.image ? 
+          <AvatarImageLarge source={item.image} />
+          :
+          <AvatarDefaultLarge />}
+          <Title>{item.name}</Title>
+        </View>
+        <Text>{format(item.birthday, "yyyy年M月")}{item.hasDay && format(item.birthday, "d日")}生まれ</Text>
+        <AgeText date={item.birthday}/>
+        <Paragraph>{item.memo}</Paragraph>
+        <Menu
+          visible={menuVisible}
+          onDismiss={() => setMenuVisible(false)}
+          anchor={{x: Dimensions.get("window").width, y: 120}}>
+          <Menu.Item onPress={() => {
+            setMenuVisible(false)
+            navigation.navigate('Compose', {
+              itemId: item.id
+            })
+          }} title="編集" />
+          <Menu.Item onPress={() => {
+            setMenuVisible(false)
+            setDialogVisible(true)
+          }} title="削除" />
+        </Menu>
+        <Portal>
+          <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+            <Dialog.Title>削除</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>{item.name}を削除してもよろしいですか？</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
+              <Button onPress={() => {
+                setDialogVisible(false)
+                onDeletePress()
+              }}>OK</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
-      <Text>{format(item.birthday, "yyyy年M月")}{item.hasDay && format(item.birthday, "d日")}生まれ</Text>
-      <AgeText date={item.birthday}/>
-      <Paragraph>{item.memo}</Paragraph>
-      <Menu
-        visible={menuVisible}
-        onDismiss={() => setMenuVisible(false)}
-        anchor={{x: Dimensions.get("window").width, y: 120}}>
-        <Menu.Item onPress={() => {
-          setMenuVisible(false)
-          navigation.navigate('Compose', {
-            itemId: item.id
-          })
-        }} title="編集" />
-        <Menu.Item onPress={() => {
-          setMenuVisible(false)
-          setDialogVisible(true)
-        }} title="削除" />
-      </Menu>
-      <Portal>
-        <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
-          <Dialog.Title>削除</Dialog.Title>
-          <Dialog.Content>
-            <Paragraph>{item.name}を削除してもよろしいですか？</Paragraph>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
-            <Button onPress={() => {
-              setDialogVisible(false)
-              onDeletePress()
-            }}>OK</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
+      <AdMobBanner
+        adUnitID={adUnitID}
+        servePersonalizedAds
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  details: {
     flex: 1,
     padding: 16,
   },

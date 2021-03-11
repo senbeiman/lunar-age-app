@@ -24,7 +24,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-2356378721117875~5121004515"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
