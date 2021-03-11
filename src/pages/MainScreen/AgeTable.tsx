@@ -1,8 +1,8 @@
 import React from 'react'
 import { FlatList } from 'react-native'
 import AgeAccordionList from './AgeAccordionList'
-import { Item, YearItem } from './types'
-import { getAgeFromBirthday } from './utils'
+import { Item, YearItem } from '../../types'
+import { getAgeFromBirthday } from '../../utils'
 
 const AgeTable: React.FC<{ items: Item[] }> = ({ items }) => {
 

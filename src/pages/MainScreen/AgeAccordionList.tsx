@@ -2,9 +2,9 @@ import { useNavigation } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Badge, Caption, List, Text } from 'react-native-paper'
-import AvatarDefaultSmall from './components/AvatarDefaultSmall'
-import AvatarImageSmall from './components/AvatarImageSmall'
-import { YearItem } from './types'
+import AvatarDefaultSmall from '../../components/AvatarDefaultSmall'
+import AvatarImageSmall from '../../components/AvatarImageSmall'
+import { YearItem } from '../../types'
 
 interface Props {
   item: YearItem

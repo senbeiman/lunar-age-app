@@ -4,10 +4,10 @@ import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
 import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
-import AgeText from './components/AgeText'
-import { RouteParamList, DbRows } from './types'
-import AvatarDefaultLarge from './components/AvatarDefaultLarge'
-import AvatarImageLarge from './components/AvatarImageLarge'
+import AgeText from '../../components/AgeText'
+import { RouteParamList, DbRows } from '../../types'
+import AvatarDefaultLarge from '../../components/AvatarDefaultLarge'
+import AvatarImageLarge from '../../components/AvatarImageLarge'
 
 const db = SQLite.openDatabase('db.db')
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import FormTextInput from './components/FormTextInput'
+import FormTextInput from '../../components/FormTextInput'
 import { Text } from 'react-native-paper'
 
 const rules = {

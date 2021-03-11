@@ -2,10 +2,10 @@ import { useNavigation } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { FlatList, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Button, Dialog, List, Portal, RadioButton } from 'react-native-paper'
-import AgeText from './components/AgeText'
-import AvatarDefaultSmall from './components/AvatarDefaultSmall'
-import AvatarImageSmall from './components/AvatarImageSmall'
-import { Item } from './types'
+import AgeText from '../../components/AgeText'
+import AvatarDefaultSmall from '../../components/AvatarDefaultSmall'
+import AvatarImageSmall from '../../components/AvatarImageSmall'
+import { Item } from '../../types'
 
 const radioButtonLabels = {
   "createAsc": "登録が早い順",
@@ -80,10 +80,10 @@ const AgeList: React.FC<{items: Item[]}> = ({ items }) => {
             }} value={sortSelected}>
               <RadioButton.Item label={radioButtonLabels.createAsc} value="createAsc" />
               <RadioButton.Item label={radioButtonLabels.createDesc} value="createDesc" />
-              <RadioButton.Item label={radioButtonLabels.nameAsc} value="nameAsc" />
-              <RadioButton.Item label={radioButtonLabels.nameDesc} value="nameDesc" />
               <RadioButton.Item label={radioButtonLabels.ageAsc} value="ageAsc" />
               <RadioButton.Item label={radioButtonLabels.ageDesc} value="ageDesc" />
+              <RadioButton.Item label={radioButtonLabels.nameAsc} value="nameAsc" />
+              <RadioButton.Item label={radioButtonLabels.nameDesc} value="nameDesc" />
             </RadioButton.Group>
           </Dialog.Content>
         </Dialog>

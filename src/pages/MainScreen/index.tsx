@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native'
 import { parseISO } from 'date-fns'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { FAB, ToggleButton } from 'react-native-paper'
+import { FAB } from 'react-native-paper'
 import * as SQLite from 'expo-sqlite'
-import { DbRows, Item } from './types'
+import { DbRows, Item } from '../../types'
 import AgeTable from './AgeTable'
 import AgeList from './AgeList'
+import ListToggleButtons from './ListToggleButtons'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -15,6 +16,17 @@ const MainScreen: React.FC = () => {
   const [items, setItems] = useState<Item[]>([])
   const [toggleValue, setToggleValue] = useState('list')
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <ListToggleButtons 
+          value={toggleValue} 
+          onValueChange={value => {setToggleValue(value)}}
+        />
+      )
+    })
+  }, [navigation, toggleValue])
+  
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       db.transaction(tx => {
@@ -43,12 +55,6 @@ const MainScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ToggleButton.Row
-        onValueChange={value => setToggleValue(value)}
-        value={toggleValue}>
-        <ToggleButton icon="format-list-bulleted" value="list" />
-        <ToggleButton icon="format-list-numbered" value="table" />
-      </ToggleButton.Row>
       {toggleValue === 'list' ? 
       <AgeList items={items}/> :
       <AgeTable items={items}/> }

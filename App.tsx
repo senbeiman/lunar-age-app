@@ -1,18 +1,28 @@
 import 'react-native-gesture-handler'
 import React from 'react'
-import { Provider as PaperProvider } from 'react-native-paper'
-import { NavigationContainer } from '@react-navigation/native'
+import { DefaultTheme as PaperDefaultTheme, Provider as PaperProvider } from 'react-native-paper'
+import { DefaultTheme as NavigationDefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import MainScreen from './src/MainScreen'
-import ComposeScreen from './src/ComposeScreen'
-import DetailsScreen from './src/DetailsScreen'
+import MainScreen from './src/pages/MainScreen'
+import ComposeScreen from './src/pages/ComposeScreen'
+import DetailsScreen from './src/pages/DetailsScreen'
 
 const Stack = createStackNavigator()
 
+const theme = {
+  ...NavigationDefaultTheme,
+  ...PaperDefaultTheme,
+  colors: {
+    ...NavigationDefaultTheme.colors,
+    ...PaperDefaultTheme.colors,
+    background: "white"
+  }
+
+}
 export default function App() {
   return (
-    <PaperProvider>
-      <NavigationContainer>
+    <PaperProvider theme={theme}>
+      <NavigationContainer theme={theme}>
         <Stack.Navigator>
           <Stack.Screen 
             name="Main"
