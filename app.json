@@ -17,9 +17,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.github.senbeiman.lunar-age-app",
+      "buildNumber": "1000000"
     },
     "android": {
+      "package": "com.github.senbeiman.lunar_age_app",
+      "versionCode": 1000000,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

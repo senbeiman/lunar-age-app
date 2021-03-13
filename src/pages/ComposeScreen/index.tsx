@@ -83,8 +83,8 @@ const ComposeScreen: React.FC = () => {
         itemId ? 
           tx.executeSql(`update items set name = ?, memo = ?, has_day = ?, birthday = ?, image = ? where id = ?`, [values.name, values.memo, hasDay, birthdayString, imageUri, itemId]) :
           tx.executeSql(`insert into items (name, memo, has_day, birthday, image) values (?, ?, ?, ?, ?)`, [values.name, values.memo, hasDay, birthdayString, imageUri])
-      },
-      () => {console.log('error')}, // TODO: displaying error on screen
+      }, // TODO: move sql functions to utils.ts
+      () => {}, 
       () => {navigation.goBack()}
     )
   }

@@ -18,6 +18,7 @@ const MainScreen: React.FC = () => {
   const [items, setItems] = useState<Item[]>([])
   const [toggleValue, setToggleValue] = useState('list')
 
+  // TODO: add menu for import and export db file
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (

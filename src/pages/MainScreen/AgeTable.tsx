@@ -36,7 +36,7 @@ const AgeTable: React.FC<{ items: Item[] }> = ({ items }) => {
         monthItem.items).length
     }
   ))
-  
+  // TODO: remove accordion ui and re-design
   return (
     <FlatList
       data={itemTableWithCount}

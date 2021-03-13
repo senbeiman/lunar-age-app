@@ -29,6 +29,7 @@ const ImagePickerAvatar: React.FC<Props> = ({ imageUri, onPick }) => {
     console.log(result);
 
     if (!result.cancelled) {
+      // TODO: move image from cache to storage using FileSystem
       onPick(`${result.uri}`);
     }
   }
