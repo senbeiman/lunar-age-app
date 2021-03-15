@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Button, Dialog, Portal, Text } from 'react-native-paper'
+import { Button, Text } from 'react-native-paper'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import FormTextInput from '../../components/FormTextInput'
 import { formatISO, sub } from 'date-fns'
@@ -9,11 +9,12 @@ import { format, parseISO } from 'date-fns'
 import ImagePickerAvatar from '../../components/ImagePickerAvatar'
 import { FormProvider, useForm } from 'react-hook-form'
 import BirthdayFields from './BirthdayFields'
-import GuessBirthdayFields from './GuessBirthdayFields'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
 import SqlService from '../../sqlService'
+import GuessBirthdayDialog from './GuessBirthdayDialog'
+import ErrorMessage from '../../components/ErrorMessage'
 
 
 interface FormValues {
@@ -37,7 +38,6 @@ const ComposeScreen: React.FC = () => {
   const dialogFormMethods = useForm({mode: "onBlur"})
   const [dialogVisible, setDialogVisible] = useState(false)
 
-// TODO: integrate error messages into one snackbar
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       if (!itemId) {
@@ -115,13 +115,28 @@ const ComposeScreen: React.FC = () => {
       <View style={styles.form}>
         <FormProvider {...mainFormMethods} >
           <View style={styles.main}>
+            <ErrorMessage
+              name="name"
+              label="名前" 
+            />
+            <ErrorMessage
+              name="birthYear"
+              label="年" 
+            />
+            <ErrorMessage
+              name="birthMonth"
+              label="月" 
+            />
+            <ErrorMessage
+              name="birthDay"
+              label="日" 
+            />
             <View style={styles.nameRow}>
               <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
               <View style={styles.nameField}>
                 <Text>名前</Text>
                 <FormTextInput
                   name="name"
-                  defaultValue=""
                   rules={formRules.name}
                 />
               </View>
@@ -138,7 +153,6 @@ const ComposeScreen: React.FC = () => {
               <ScrollView>
                 <FormTextInput
                   name="memo"
-                  defaultValue=""
                   multiline
                 />
               </ScrollView>
@@ -150,20 +164,13 @@ const ComposeScreen: React.FC = () => {
             </Button>
           </View>
         </FormProvider>
-          <Portal>
-            <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
-              <Dialog.Title>生年月日逆算</Dialog.Title>
-              <Dialog.Content>
-                <FormProvider {...dialogFormMethods} >
-                  <GuessBirthdayFields />
-                </FormProvider>
-              </Dialog.Content>
-              <Dialog.Actions>
-                <Button onPress={() => setDialogVisible(false)}>キャンセル</Button>
-                <Button onPress={dialogFormMethods.handleSubmit(onPressCalculate)}>逆算</Button>
-              </Dialog.Actions>
-            </Dialog>
-          </Portal>
+        <GuessBirthdayDialog 
+          visible={dialogVisible}
+          onDismiss={() => setDialogVisible(false)}
+          onCancelPress={() => setDialogVisible(false)}
+          onOkPress={dialogFormMethods.handleSubmit(onPressCalculate)}
+          formMethods={dialogFormMethods}
+        />
       </View>
       <AdMobBanner
         adUnitID={adUnitID}

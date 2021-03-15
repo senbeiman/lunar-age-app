@@ -50,8 +50,6 @@ const MainScreen: React.FC = () => {
     navigation.navigate('Compose')
   }
 
-
-  // TODO: refactor using tab navigation
   return (
     <View style={styles.container}>
       {toggleValue === 'list' ? 

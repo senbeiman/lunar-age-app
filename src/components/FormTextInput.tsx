@@ -1,18 +1,16 @@
 import { Controller, useFormContext } from 'react-hook-form'
 import React from 'react'
 import { View } from 'react-native'
-import { TextInput, HelperText } from 'react-native-paper'
-import { ErrorMessage } from '@hookform/error-message'
+import { TextInput } from 'react-native-paper'
 
 interface Props {
   name: string
   rules?: object
-  defaultValue: string
   numeric?: boolean
   style?: any
   multiline?: boolean
 }
-const FormTextInput: React.FC<Props> = ({ style, name, rules, defaultValue, numeric, multiline}) => {
+const FormTextInput: React.FC<Props> = ({ style, name, rules, numeric, multiline}) => {
   const { control, errors } = useFormContext()
   return (
     <View style={style}>
@@ -32,13 +30,7 @@ const FormTextInput: React.FC<Props> = ({ style, name, rules, defaultValue, nume
         )}
         name={name}
         rules={rules}
-        defaultValue={defaultValue}
-      />
-      <ErrorMessage
-        errors={errors}
-        name={name}
-        render={({ message }) => 
-          <HelperText type="error">{message}</HelperText>}
+        defaultValue=""
       />
     </View>
   )

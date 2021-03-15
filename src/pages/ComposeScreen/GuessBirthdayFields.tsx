@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import FormTextInput from '../../components/FormTextInput'
 import { Text } from 'react-native-paper'
+import ErrorMessage from '../../components/ErrorMessage'
 
 const rules = {
   guessYear: {
@@ -47,44 +48,54 @@ const rules = {
 }
 const GuessBirthdayFields: React.FC = () => {
   return (
-    <View style={styles.row}>
-      <View style={styles.inputFields}>
-        <View style={styles.row}>
-          <FormTextInput
-            style={styles.birthYearInput}
-            name="guessYear"
-            defaultValue=""
-            rules={rules.guessYear}
-            numeric
-          />
-          <Text>年</Text>
-          <FormTextInput
-            style={styles.birthInput}
-            name="guessMonth"
-            defaultValue=""
-            rules={rules.guessMonth}
-            numeric
-          />
-          <Text>月のとき</Text>
-        </View>
-        <View style={styles.row}>
-          <FormTextInput
-            style={styles.birthInput}
-            name="guessAgeYears"
-            defaultValue=""
-            rules={rules.guessAgeYears}
-            numeric
-          />
-          <Text>歳</Text>
-          <FormTextInput
-            style={styles.birthInput}
-            name="guessAgeMonths"
-            defaultValue=""
-            rules={rules.guessAgeMonths}
-            numeric
-          />
-          <Text>ヶ月だった</Text>
-        </View>
+    <View style={styles.inputFields}>
+      <ErrorMessage
+        name="guessYear"
+        label="年" 
+      />
+      <ErrorMessage
+        name="guessMonth"
+        label="月" 
+      />
+      <ErrorMessage
+        name="guessAgeYears"
+        label="歳" 
+      />
+      <ErrorMessage
+        name="guessAgeMonths"
+        label="ヶ月" 
+      />
+      <View style={styles.row}>
+        <FormTextInput
+          style={styles.birthYearInput}
+          name="guessYear"
+          rules={rules.guessYear}
+          numeric
+        />
+        <Text>年</Text>
+        <FormTextInput
+          style={styles.birthInput}
+          name="guessMonth"
+          rules={rules.guessMonth}
+          numeric
+        />
+        <Text>月のとき</Text>
+      </View>
+      <View style={styles.row}>
+        <FormTextInput
+          style={styles.birthInput}
+          name="guessAgeYears"
+          rules={rules.guessAgeYears}
+          numeric
+        />
+        <Text>歳</Text>
+        <FormTextInput
+          style={styles.birthInput}
+          name="guessAgeMonths"
+          rules={rules.guessAgeMonths}
+          numeric
+        />
+        <Text>ヶ月だった</Text>
       </View>
     </View>
   )
@@ -97,7 +108,6 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   inputFields: {
-    flex: 1
   },
   birthYearInput: {
     flex: 2,
