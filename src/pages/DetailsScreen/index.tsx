@@ -3,7 +3,6 @@ import { parseISO, format } from 'date-fns'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
 import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog } from 'react-native-paper'
-import * as SQLite from 'expo-sqlite'
 import AgeText from '../../components/AgeText'
 import { RouteParamList, DbRows } from '../../types'
 import AvatarDefaultLarge from '../../components/AvatarDefaultLarge'
@@ -11,16 +10,8 @@ import AvatarImageLarge from '../../components/AvatarImageLarge'
 import * as FileSystem from 'expo-file-system'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
+import SqlService from '../../sqlService'
 
-const db = SQLite.openDatabase('db.db')
-
-const test = async () => {
-  const {uri} = await FileSystem.getInfoAsync('SQLite/db.db')
-  console.log(uri)
-}
-test()
-
-console.log()
 interface Item {
   id: number
   name: string
@@ -49,30 +40,19 @@ const DetailsScreen: React.FC = () => {
   }, [navigation])
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      db.transaction(tx => {
-        tx.executeSql(
-          'select * from items where id = ?;',
-          [itemId],
-          (_, { rows } ) => {
-            console.log(rows)
-            const dbItem = (rows as unknown as DbRows)._array.find(row => row.id === itemId)
-            if (!dbItem) return
-            const parsedItem = {...dbItem, birthday: parseISO(dbItem.birthday), hasDay: Boolean(dbItem.has_day)}
-            setItem(parsedItem)
-          })
+      SqlService.select(itemId,
+        (_, { rows } ) => {
+          console.log(rows)
+          const dbItem = (rows as unknown as DbRows)._array.find(row => row.id === itemId)
+          if (!dbItem) return
+          const parsedItem = {...dbItem, birthday: parseISO(dbItem.birthday), hasDay: Boolean(dbItem.has_day)}
+          setItem(parsedItem)
         })
       })
     return unsubscribe
   }, [navigation])
   const onDeletePress = () => {
-    db.transaction(
-      tx => {
-        tx.executeSql(
-          'delete from items where id = ?;',
-          [itemId]
-        )
-      },
-      () => {console.log('error')}, 
+    SqlService.remove(itemId,
       () => {navigation.goBack()}
     )
   }

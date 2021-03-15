@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Button, Dialog, Portal, Text } from 'react-native-paper'
-import * as SQLite from 'expo-sqlite'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import FormTextInput from '../../components/FormTextInput'
 import { formatISO, sub } from 'date-fns'
@@ -14,8 +13,8 @@ import GuessBirthdayFields from './GuessBirthdayFields'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
+import SqlService from '../../sqlService'
 
-const db = SQLite.openDatabase('db.db')
 
 interface FormValues {
   name: string
@@ -48,25 +47,22 @@ const ComposeScreen: React.FC = () => {
         return
       }
       navigation.setOptions({ title: "編集"})
-      db.transaction(tx => {
-        tx.executeSql(
-          'select * from items where id = ?;',
-          [itemId],
-          (_, { rows } ) => {
-            const dbItem = (rows as unknown as DbRows)._array.find((row: { id: number }) => row.id === itemId)
-            if (!dbItem) return
-            const birthday = parseISO(dbItem.birthday)
-            mainFormMethods.reset({
-              name: dbItem.name,
-              memo: dbItem.memo,
-              birthYear: format(birthday, "yyyy"),
-              birthMonth: format(birthday, "M"),
-              birthDay: dbItem.has_day ? format(birthday, "d") : "",
-            })
-            setImageUri(dbItem.image)
+      SqlService.select(itemId,
+        (_, { rows } ) => {
+          const dbItem = (rows as unknown as DbRows)._array.find((row: { id: number }) => row.id === itemId)
+          if (!dbItem) return
+          const birthday = parseISO(dbItem.birthday)
+          mainFormMethods.reset({
+            name: dbItem.name,
+            memo: dbItem.memo,
+            birthYear: format(birthday, "yyyy"),
+            birthMonth: format(birthday, "M"),
+            birthDay: dbItem.has_day ? format(birthday, "d") : "",
           })
-        })
-      })
+          setImageUri(dbItem.image)
+        }
+      )
+    })
     return unsubscribe
   }, [navigation])
 
@@ -78,15 +74,28 @@ const ComposeScreen: React.FC = () => {
       return
     }
     const birthdayString = formatISO(birthdayDate, { representation: 'date'})
-    db.transaction(
-      tx => {
-        itemId ? 
-          tx.executeSql(`update items set name = ?, memo = ?, has_day = ?, birthday = ?, image = ? where id = ?`, [values.name, values.memo, hasDay, birthdayString, imageUri, itemId]) :
-          tx.executeSql(`insert into items (name, memo, has_day, birthday, image) values (?, ?, ?, ?, ?)`, [values.name, values.memo, hasDay, birthdayString, imageUri])
-      }, // TODO: move sql functions to utils.ts
-      () => {}, 
-      () => {navigation.goBack()}
-    )
+
+    const newValues = {
+      name: values.name,
+      memo: values.memo,
+      hasDay,
+      birthday: birthdayString,
+      image: imageUri,
+    }
+
+    itemId ?
+      SqlService.update(
+        {
+          ...newValues,
+          id: itemId
+        },
+        () => {navigation.goBack()
+      })
+      :
+      SqlService.insert(
+        { ...newValues },
+        () => {navigation.goBack()
+      })
   }
 
   const onPressCalculate = () => {

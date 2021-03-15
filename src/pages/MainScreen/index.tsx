@@ -3,15 +3,14 @@ import { parseISO } from 'date-fns'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { FAB } from 'react-native-paper'
-import * as SQLite from 'expo-sqlite'
 import { DbRows, Item } from '../../types'
 import AgeTable from './AgeTable'
 import AgeList from './AgeList'
 import ListToggleButtons from './ListToggleButtons'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
+import SqlService from '../../sqlService'
 
-const db = SQLite.openDatabase('db.db')
 
 const MainScreen: React.FC = () => {
   const navigation = useNavigation()
@@ -34,21 +33,15 @@ const MainScreen: React.FC = () => {
   
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      db.transaction(tx => {
-        tx.executeSql(
-          `create table if not exists items (id integer primary key not null, name text not null, memo text, has_day integer not null, birthday text not null, image text);`
-        )
-        tx.executeSql(
-          'select * from items',
-          [],
-          (_, { rows } ) => {
-            const items = (rows as unknown as DbRows)._array.map(item => {
-              return {...item, birthday: parseISO(item.birthday), hasDay: Boolean(item.has_day)}
-            })
-            setItems(items)
-          }
-        )
-      })
+      SqlService.create()
+      SqlService.selectAll(
+        (_, { rows } ) => {
+          const items = (rows as unknown as DbRows)._array.map(item => {
+            return {...item, birthday: parseISO(item.birthday), hasDay: Boolean(item.has_day)}
+          })
+          setItems(items)
+        }
+      )
     })
     return unsubscribe
   }, [navigation])
@@ -58,6 +51,7 @@ const MainScreen: React.FC = () => {
   }
 
 
+  // TODO: refactor using tab navigation
   return (
     <View style={styles.container}>
       {toggleValue === 'list' ? 
