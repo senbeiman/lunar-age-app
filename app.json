@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "lunar-age-app",
+    "name": "月齢リスト",
     "slug": "lunar-age-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -32,9 +32,6 @@
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-2356378721117875~5121004515"
       }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
     }
   }
 }
