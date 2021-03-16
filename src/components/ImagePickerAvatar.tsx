@@ -1,15 +1,16 @@
 import React from 'react'
-import { Platform, StyleSheet } from 'react-native'
+import { Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker'
 import AvatarDefaultLarge from './AvatarDefaultLarge'
 import AvatarImageLarge from './AvatarImageLarge'
+import FileService from '../services/fileService'
 
 interface Props {
-  imageUri: string | null
+  image: string | null
   onPick: (uri: string) => void
 }
-const ImagePickerAvatar: React.FC<Props> = ({ imageUri, onPick }) => {
+const ImagePickerAvatar: React.FC<Props> = ({ image, onPick }) => {
 
   const pickImage = async () => {
     if (Platform.OS !== 'web') {
@@ -29,24 +30,19 @@ const ImagePickerAvatar: React.FC<Props> = ({ imageUri, onPick }) => {
     console.log(result);
 
     if (!result.cancelled) {
-      // TODO: move image from cache to storage using FileSystem
-      onPick(`${result.uri}`);
+      const fileName = await FileService.moveImageFromCacheToDocument(result.uri)
+      onPick(fileName)
     }
   }
+  const source = FileService.getImageFullPath(image)
+
   return (
     <TouchableOpacity onPress={pickImage}>
-      {imageUri ? 
-      <AvatarImageLarge source={imageUri} /> :
+      {source ? 
+      <AvatarImageLarge source={source} /> :
       <AvatarDefaultLarge />}
     </TouchableOpacity>
   )
 }
-
-const styles = StyleSheet.create({
-  avatar: {
-    alignSelf: "center",
-    margin: 12,
-  },
-})
 
 export default ImagePickerAvatar

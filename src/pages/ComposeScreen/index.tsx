@@ -12,9 +12,10 @@ import BirthdayFields from './BirthdayFields'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
-import SqlService from '../../sqlService'
+import SqlService from '../../services/sqlService'
 import GuessBirthdayDialog from './GuessBirthdayDialog'
 import ErrorMessage from '../../components/ErrorMessage'
+import fileService from '../../services/fileService'
 
 
 interface FormValues {
@@ -33,7 +34,7 @@ const ComposeScreen: React.FC = () => {
   const navigation = useNavigation()
   const { params } = useRoute<RouteProp<RouteParamList, 'Details'>>()
   const itemId = params?.itemId
-  const [imageUri, setImageUri] = useState<string | null>(null)
+  const [image, setImage] = useState<string | null>(null)
   const mainFormMethods = useForm({mode: "onBlur"})
   const dialogFormMethods = useForm({mode: "onBlur"})
   const [dialogVisible, setDialogVisible] = useState(false)
@@ -43,7 +44,7 @@ const ComposeScreen: React.FC = () => {
       if (!itemId) {
         mainFormMethods.reset()
         dialogFormMethods.reset()
-        setImageUri(null)
+        setImage(null)
         return
       }
       navigation.setOptions({ title: "編集"})
@@ -59,7 +60,7 @@ const ComposeScreen: React.FC = () => {
             birthMonth: format(birthday, "M"),
             birthDay: dbItem.has_day ? format(birthday, "d") : "",
           })
-          setImageUri(dbItem.image)
+          setImage(dbItem.image)
         }
       )
     })
@@ -80,7 +81,7 @@ const ComposeScreen: React.FC = () => {
       memo: values.memo,
       hasDay,
       birthday: birthdayString,
-      image: imageUri,
+      image
     }
 
     itemId ?
@@ -132,7 +133,7 @@ const ComposeScreen: React.FC = () => {
               label="日" 
             />
             <View style={styles.nameRow}>
-              <ImagePickerAvatar imageUri={imageUri} onPick={uri => setImageUri(uri)}/>
+              <ImagePickerAvatar image={image} onPick={fileName => setImage(fileName)}/>
               <View style={styles.nameField}>
                 <Text>名前</Text>
                 <FormTextInput
@@ -144,7 +145,7 @@ const ComposeScreen: React.FC = () => {
             <View>
               <View style={styles.birthRow}>
                 <Text>生年月日</Text>
-                <Button compact style={styles.guessButton} mode="contained" onPress={() => {setDialogVisible(true)}}>逆算する</Button>
+                <Button onPress={() => {setDialogVisible(true)}}>逆算する</Button>
               </View>
               <BirthdayFields />
             </View>
@@ -195,9 +196,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between"
-  },
-  guessButton: {
-    margin: 6
   },
   nameRow: {
     flexDirection: "row",

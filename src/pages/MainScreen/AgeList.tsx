@@ -43,7 +43,7 @@ const AgeList: React.FC<{items: Item[]}> = ({ items }) => {
   return (
     <View style={styles.container}>
       <View style={{flexDirection: 'row'}}>
-        <Button color="black" icon="sort" onPress={() => {setDialogVisible(true)}}>
+        <Button icon="sort" onPress={() => {setDialogVisible(true)}}>
           {radioButtonLabels[sortSelected]}
         </Button>
       </View>

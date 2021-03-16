@@ -1,6 +1,6 @@
 import React from 'react'
 import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native'
-import { Text, Title } from 'react-native-paper'
+import { DefaultTheme, Text, Title } from 'react-native-paper'
 import { Item } from '../../types'
 import { getAgeFromBirthday } from '../../utils'
 import AvatarDefaultSmall from '../../components/AvatarDefaultSmall'
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   dot: {
     borderRadius: 100,
-    backgroundColor: "black",  // TODO: use theme color
+    backgroundColor: DefaultTheme.colors.text, 
     width: 6,
     height: 6,
     marginLeft: 6,

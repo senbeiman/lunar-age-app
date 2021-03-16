@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native'
-import { parseISO } from 'date-fns'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { FAB } from 'react-native-paper'
@@ -9,7 +8,8 @@ import AgeList from './AgeList'
 import ListToggleButtons from './ListToggleButtons'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
-import SqlService from '../../sqlService'
+import SqlService from '../../services/sqlService'
+import { parseDbItem } from '../../utils'
 
 
 const MainScreen: React.FC = () => {
@@ -36,9 +36,7 @@ const MainScreen: React.FC = () => {
       SqlService.create()
       SqlService.selectAll(
         (_, { rows } ) => {
-          const items = (rows as unknown as DbRows)._array.map(item => {
-            return {...item, birthday: parseISO(item.birthday), hasDay: Boolean(item.has_day)}
-          })
+          const items = (rows as unknown as DbRows)._array.map(parseDbItem)
           setItems(items)
         }
       )

@@ -3,15 +3,16 @@ export type RouteParamList = {
     itemId: number
   }
 }
+export interface DbRow {
+  id: number
+  birthday: string
+  name: string
+  memo: string
+  has_day: number
+  image: string
+}
 export type DbRows  = {
-  _array: {
-    id: number
-    birthday: string
-    name: string
-    memo: string
-    has_day: number
-    image: string
-  }[]
+  _array: DbRow[]
 }
 export interface Item {
   id: number
@@ -19,5 +20,5 @@ export interface Item {
   memo: string
   birthday: Date
   hasDay: boolean
-  image: string
+  image: string | null
 }

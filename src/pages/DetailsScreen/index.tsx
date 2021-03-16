@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { parseISO, format } from 'date-fns'
+import { format } from 'date-fns'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
 import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog } from 'react-native-paper'
@@ -7,10 +7,10 @@ import AgeText from '../../components/AgeText'
 import { RouteParamList, DbRows } from '../../types'
 import AvatarDefaultLarge from '../../components/AvatarDefaultLarge'
 import AvatarImageLarge from '../../components/AvatarImageLarge'
-import * as FileSystem from 'expo-file-system'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
-import SqlService from '../../sqlService'
+import SqlService from '../../services/sqlService'
+import { parseDbItem } from '../../utils'
 
 interface Item {
   id: number
@@ -45,8 +45,7 @@ const DetailsScreen: React.FC = () => {
           console.log(rows)
           const dbItem = (rows as unknown as DbRows)._array.find(row => row.id === itemId)
           if (!dbItem) return
-          const parsedItem = {...dbItem, birthday: parseISO(dbItem.birthday), hasDay: Boolean(dbItem.has_day)}
-          setItem(parsedItem)
+          setItem(parseDbItem(dbItem))
         })
       })
     return unsubscribe
