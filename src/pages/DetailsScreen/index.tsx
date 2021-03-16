@@ -4,22 +4,12 @@ import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
 import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog } from 'react-native-paper'
 import AgeText from '../../components/AgeText'
-import { RouteParamList, DbRows } from '../../types'
+import { RouteParamList, Item } from '../../types'
 import AvatarDefaultLarge from '../../components/AvatarDefaultLarge'
 import AvatarImageLarge from '../../components/AvatarImageLarge'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
 import SqlService from '../../services/sqlService'
-import { parseDbItem } from '../../utils'
-
-interface Item {
-  id: number
-  name: string
-  memo: string
-  birthday: Date
-  hasDay: boolean
-  image: string
-}
 
 const DetailsScreen: React.FC = () => {
   const navigation = useNavigation()
@@ -40,12 +30,8 @@ const DetailsScreen: React.FC = () => {
   }, [navigation])
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      SqlService.select(itemId,
-        (_, { rows } ) => {
-          console.log(rows)
-          const dbItem = (rows as unknown as DbRows)._array.find(row => row.id === itemId)
-          if (!dbItem) return
-          setItem(parseDbItem(dbItem))
+      SqlService.select(itemId, (item) => {
+          setItem(item)
         })
       })
     return unsubscribe

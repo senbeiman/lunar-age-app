@@ -1,6 +1,4 @@
 import { differenceInMonths, parseISO } from "date-fns"
-import { DbRow } from "./types"
-import FileService from "./services/fileService"
 
 export const getAgeFromBirthday = (birthday: Date) => {
   const diffInMonth = differenceInMonths(new Date(), birthday)
@@ -13,11 +11,3 @@ export const getAgeFromBirthday = (birthday: Date) => {
   }
 }
 
-export const parseDbItem = (item: DbRow) => {
-  return {
-    ...item,
-    image: FileService.getImageFullPath(item.image),
-    birthday: parseISO(item.birthday),
-    hasDay: Boolean(item.has_day)
-  }
-}

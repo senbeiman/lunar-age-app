@@ -2,14 +2,13 @@ import { useNavigation } from '@react-navigation/native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { FAB } from 'react-native-paper'
-import { DbRows, Item } from '../../types'
+import { Item } from '../../types'
 import AgeTable from './AgeTable'
 import AgeList from './AgeList'
 import ListToggleButtons from './ListToggleButtons'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
 import SqlService from '../../services/sqlService'
-import { parseDbItem } from '../../utils'
 
 
 const MainScreen: React.FC = () => {
@@ -34,12 +33,9 @@ const MainScreen: React.FC = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       SqlService.create()
-      SqlService.selectAll(
-        (_, { rows } ) => {
-          const items = (rows as unknown as DbRows)._array.map(parseDbItem)
-          setItems(items)
-        }
-      )
+      SqlService.selectAll((items) => {
+        setItems(items)
+      })
     })
     return unsubscribe
   }, [navigation])

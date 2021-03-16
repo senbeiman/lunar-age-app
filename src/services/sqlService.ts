@@ -1,5 +1,8 @@
 import * as SQLite from 'expo-sqlite'
 import { SQLStatementCallback } from 'expo-sqlite'
+import { DbRow, DbRows, Item } from '../types'
+import FileService from "../services/fileService"
+import { parseISO } from 'date-fns'
 
 const db = SQLite.openDatabase('db.db')
 
@@ -12,23 +15,39 @@ const create = () => {
     }
   )
 }
+const parseDbItem = (item: DbRow) => {
+  return {
+    ...item,
+    image: FileService.getImageFullPath(item.image),
+    birthday: parseISO(item.birthday),
+    hasDay: Boolean(item.has_day)
+  }
+}
 
-const selectAll = (callback: SQLStatementCallback) => {
+const selectAll = (callback: (items: Item[]) => void) => {
   db.transaction(tx => {
     tx.executeSql(
       'select * from items;',
       [],
-      callback
+      (_, { rows } ) => {
+        const items = (rows as unknown as DbRows)._array.map(parseDbItem)
+        callback(items)
+      }
     )
   })
 }
 
-const select = (itemId: number, callback: SQLStatementCallback) => {
+const select = (itemId: number, callback: (item: Item ) => void) => {
   db.transaction(tx => {
     tx.executeSql(
       'select * from items where id = ?;',
       [itemId],
-      callback
+      (_, { rows } ) => {
+        console.log(rows)
+        const dbItem = (rows as unknown as DbRows)._array.find(row => row.id === itemId)
+        if (!dbItem) return
+        callback(parseDbItem(dbItem))
+      }
     )
   })
 }
