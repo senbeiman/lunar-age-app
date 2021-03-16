@@ -24,20 +24,20 @@ const parseDbItem = (item: DbRow) => {
   }
 }
 
-const selectAll = (callback: (items: Item[]) => void) => {
+const selectAll = (callback: (items: DbRow[]) => void) => {
   db.transaction(tx => {
     tx.executeSql(
       'select * from items;',
       [],
       (_, { rows } ) => {
-        const items = (rows as unknown as DbRows)._array.map(parseDbItem)
+        const items = (rows as unknown as DbRows)._array
         callback(items)
       }
     )
   })
 }
 
-const select = (itemId: number, callback: (item: Item ) => void) => {
+const select = (itemId: number, callback: (item: DbRow ) => void) => {
   db.transaction(tx => {
     tx.executeSql(
       'select * from items where id = ?;',
@@ -46,7 +46,7 @@ const select = (itemId: number, callback: (item: Item ) => void) => {
         console.log(rows)
         const dbItem = (rows as unknown as DbRows)._array.find(row => row.id === itemId)
         if (!dbItem) return
-        callback(parseDbItem(dbItem))
+        callback(dbItem)
       }
     )
   })
@@ -101,6 +101,7 @@ const insert = (
 }
 
 export default {
+  parseDbItem,
   create,
   select,
   selectAll,

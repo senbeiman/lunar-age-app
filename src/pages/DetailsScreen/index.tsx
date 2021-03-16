@@ -30,8 +30,8 @@ const DetailsScreen: React.FC = () => {
   }, [navigation])
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      SqlService.select(itemId, (item) => {
-          setItem(item)
+      SqlService.select(itemId, (dbItem) => {
+          setItem(SqlService.parseDbItem(dbItem))
         })
       })
     return unsubscribe

@@ -33,8 +33,8 @@ const MainScreen: React.FC = () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       SqlService.create()
-      SqlService.selectAll((items) => {
-        setItems(items)
+      SqlService.selectAll((dbItems) => {
+        setItems(dbItems.map(SqlService.parseDbItem))
       })
     })
     return unsubscribe

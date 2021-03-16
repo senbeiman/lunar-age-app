@@ -49,9 +49,7 @@ const ComposeScreen: React.FC = () => {
       }
       navigation.setOptions({ title: "編集"})
       SqlService.select(itemId,
-        (_, { rows } ) => {
-          const dbItem = (rows as unknown as DbRows)._array.find((row: { id: number }) => row.id === itemId)
-          if (!dbItem) return
+        (dbItem) => {
           const birthday = parseISO(dbItem.birthday)
           mainFormMethods.reset({
             name: dbItem.name,
