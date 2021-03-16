@@ -16,7 +16,7 @@ const ImagePickerAvatar: React.FC<Props> = ({ image, onPick }) => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
+        alert('画像を選択するにはメディアライブラリへのアクセス許可が必要です');
         return
       }
     }
