@@ -144,7 +144,7 @@ const ComposeScreen: React.FC = () => {
             <View>
               <View style={styles.birthRow}>
                 <Text>生年月日</Text>
-                <Button onPress={() => {setDialogVisible(true)}}>逆算する</Button>
+                <Button compact style={styles.guessButton} mode="contained" onPress={() => {setDialogVisible(true)}}>逆算する</Button>
               </View>
               <BirthdayFields />
             </View>
@@ -195,6 +195,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between"
+  },
+  guessButton: {
+    margin: 6
   },
   nameRow: {
     flexDirection: "row",
