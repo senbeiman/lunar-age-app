@@ -4,7 +4,7 @@ import { Button, Text } from 'react-native-paper'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import FormTextInput from '../../components/FormTextInput'
 import { formatISO, sub } from 'date-fns'
-import { DbRows, RouteParamList } from '../../types'
+import { RouteParamList } from '../../types'
 import { format, parseISO } from 'date-fns'
 import ImagePickerAvatar from '../../components/ImagePickerAvatar'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -15,7 +15,7 @@ import { adUnitID } from '../../constants'
 import SqlService from '../../services/sqlService'
 import GuessBirthdayDialog from './GuessBirthdayDialog'
 import ErrorMessage from '../../components/ErrorMessage'
-import fileService from '../../services/fileService'
+import FileService from '../../services/fileService'
 
 
 interface FormValues {
@@ -34,7 +34,7 @@ const ComposeScreen: React.FC = () => {
   const navigation = useNavigation()
   const { params } = useRoute<RouteProp<RouteParamList, 'Details'>>()
   const itemId = params?.itemId
-  const [image, setImage] = useState<string | null>(null)
+  const [imageUri, setImageUri] = useState<string | null>(null)
   const mainFormMethods = useForm({mode: "onBlur"})
   const dialogFormMethods = useForm({mode: "onBlur"})
   const [dialogVisible, setDialogVisible] = useState(false)
@@ -44,7 +44,7 @@ const ComposeScreen: React.FC = () => {
       if (!itemId) {
         mainFormMethods.reset()
         dialogFormMethods.reset()
-        setImage(null)
+        setImageUri(null)
         return
       }
       navigation.setOptions({ title: "編集"})
@@ -58,7 +58,7 @@ const ComposeScreen: React.FC = () => {
             birthMonth: format(birthday, "M"),
             birthDay: dbItem.has_day ? format(birthday, "d") : "",
           })
-          setImage(dbItem.image)
+          setImageUri(dbItem.has_image ? FileService.getImageFullPathFromId(dbItem.id) : null)
         }
       )
     })
@@ -79,7 +79,7 @@ const ComposeScreen: React.FC = () => {
       memo: values.memo,
       hasDay,
       birthday: birthdayString,
-      image
+      hasImage: imageUri ? 1 : 0
     }
 
     itemId ?
@@ -88,13 +88,18 @@ const ComposeScreen: React.FC = () => {
           ...newValues,
           id: itemId
         },
-        () => {navigation.goBack()
-      })
+        async () => {
+          imageUri && await FileService.copyImageFromCacheToDocument(imageUri, itemId)
+          navigation.goBack()
+        })
       :
       SqlService.insert(
         { ...newValues },
-        () => {navigation.goBack()
-      })
+        async (id) => {
+          imageUri && await FileService.copyImageFromCacheToDocument(imageUri, id)
+          navigation.goBack()
+        })
+    
   }
 
   const onPressCalculate = () => {
@@ -131,7 +136,7 @@ const ComposeScreen: React.FC = () => {
               label="日" 
             />
             <View style={styles.nameRow}>
-              <ImagePickerAvatar image={image} onPick={fileName => setImage(fileName)}/>
+              <ImagePickerAvatar source={imageUri} onPick={uri => setImageUri(uri)}/>
               <View style={styles.nameField}>
                 <Text>名前</Text>
                 <FormTextInput

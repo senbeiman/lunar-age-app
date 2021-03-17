@@ -4,13 +4,12 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker'
 import AvatarDefaultLarge from './AvatarDefaultLarge'
 import AvatarImageLarge from './AvatarImageLarge'
-import FileService from '../services/fileService'
 
 interface Props {
-  image: string | null
+  source: string | null
   onPick: (uri: string) => void
 }
-const ImagePickerAvatar: React.FC<Props> = ({ image, onPick }) => {
+const ImagePickerAvatar: React.FC<Props> = ({ source, onPick }) => {
 
   const pickImage = async () => {
     if (Platform.OS !== 'web') {
@@ -30,11 +29,9 @@ const ImagePickerAvatar: React.FC<Props> = ({ image, onPick }) => {
     console.log(result);
 
     if (!result.cancelled) {
-      const fileName = await FileService.moveImageFromCacheToDocument(result.uri)
-      onPick(fileName)
+      onPick(result.uri)
     }
   }
-  const source = FileService.getImageFullPath(image)
 
   return (
     <TouchableOpacity onPress={pickImage}>

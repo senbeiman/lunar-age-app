@@ -6,6 +6,7 @@ import AgeText from '../../components/AgeText'
 import AvatarDefaultSmall from '../../components/AvatarDefaultSmall'
 import AvatarImageSmall from '../../components/AvatarImageSmall'
 import { Item } from '../../types'
+import FileService from '../../services/fileService'
 
 const radioButtonLabels = {
   "createAsc": "登録が早い順",
@@ -61,8 +62,8 @@ const AgeList: React.FC<{items: Item[]}> = ({ items }) => {
               title={item.name}
               description={item.memo}
               left={() => 
-                      item.image ? 
-                      <AvatarImageSmall source={item.image}/> :
+                      item.hasImage ? 
+                      <AvatarImageSmall source={FileService.getImageFullPathFromId(item.id)}/> :
                       <AvatarDefaultSmall />
                     }
               right={(props) => <AgeText {...props} date={item.birthday} />}

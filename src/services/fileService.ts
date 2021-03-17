@@ -2,25 +2,30 @@ import * as FileSystem from 'expo-file-system'
 
 const imageDirectory = `${FileSystem.documentDirectory}images/`
 
-const getImageFullPath = (fileName: string | null) => fileName ? `${imageDirectory}${fileName}` : null
+const getImageFullPathFromId = (id: number) => `${imageDirectory}${id}.jpg`
 
 const createImageDirectory = async () => {
   await FileSystem.makeDirectoryAsync(imageDirectory)
 }
 
-const moveImageFromCacheToDocument = async (cacheUri: string) => {
+const copyImageFromCacheToDocument = async (cacheUri: string, id: number) => {
   const result = await FileSystem.getInfoAsync(imageDirectory)
   if (!result.exists) {
     await createImageDirectory()
   }
-  const fileName = `${new Date().getTime()}.jpg`
-  await FileSystem.moveAsync({from: cacheUri, to: `${imageDirectory}${fileName}`})
+  await FileSystem.copyAsync({from: cacheUri, to: getImageFullPathFromId(id)})
+}
 
-  return fileName
+const removeImage = async (id: number) => {
+  const fullPath = getImageFullPathFromId(id)
+  const result = await FileSystem.getInfoAsync(fullPath)
+  if (!result.exists) return
+  await FileSystem.deleteAsync(fullPath)
 }
 
 export default {
-  getImageFullPath,
-  moveImageFromCacheToDocument,
+  getImageFullPathFromId,
+  copyImageFromCacheToDocument,
+  removeImage,
 }
 
