@@ -1,10 +1,15 @@
 import * as SQLite from 'expo-sqlite'
-import { SQLResultSet, SQLResultSetRowList, SQLStatementCallback } from 'expo-sqlite'
-import { DbRow, DbRows, Item } from '../types'
-import FileService from "../services/fileService"
+import { SQLStatementCallback } from 'expo-sqlite'
+import { DbRow, DbRows } from '../types'
 import { parseISO } from 'date-fns'
 
-const db = SQLite.openDatabase('db.db')
+export const dbFile = 'lunar-age-app.db'
+let db = SQLite.openDatabase(dbFile)
+
+const reopen = () => {
+  (db as unknown as {_db: any})._db.close()
+  db = SQLite.openDatabase(dbFile)
+}
 
 const create = () => {
   db.transaction(
@@ -109,5 +114,7 @@ export default {
   selectAll,
   update,
   insert,
-  remove
+  remove,
+  reopen,
+  dbFile
 }

@@ -23,7 +23,7 @@ const DetailsScreen: React.FC = () => {
     navigation.setOptions({
       headerRight: () => (
         <IconButton 
-          icon="menu"
+          icon="dots-vertical"
           onPress={() => setMenuVisible(true)}
         />
       )

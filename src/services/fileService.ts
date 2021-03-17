@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system'
 
 const imageDirectory = `${FileSystem.documentDirectory}images/`
+const dbPath = `${FileSystem.documentDirectory}SQLite/lunar-age-app.db`
 
 const getImageFullPathFromId = (id: number) => `${imageDirectory}${id}.jpg`
 
@@ -23,9 +24,20 @@ const removeImage = async (id: number) => {
   await FileSystem.deleteAsync(fullPath)
 }
 
+const removeDb = async () => {
+  await FileSystem.deleteAsync(dbPath)
+}
+
+const copyDbFromPicker = async (from: string) => {
+  await FileSystem.copyAsync({from, to: dbPath})
+}
+
 export default {
+  dbPath,
   getImageFullPathFromId,
   copyImageFromCacheToDocument,
   removeImage,
+  removeDb,
+  copyDbFromPicker
 }
 

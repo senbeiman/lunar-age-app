@@ -1,0 +1,11 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "lunar-age-app",
+      "database": "/Users/koska/Downloads/lunar-age-app.db"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
+}
