@@ -12,6 +12,7 @@ import SqlService from '../../services/sqlService'
 import * as DocumentPicker from 'expo-document-picker'
 import * as Sharing from 'expo-sharing'
 import FileService from '../../services/fileService'
+import HeaderMenu from '../../components/HeaderMenu'
 
 
 const MainScreen: React.FC = () => {
@@ -109,10 +110,9 @@ const MainScreen: React.FC = () => {
         adUnitID={adUnitID}
         servePersonalizedAds
       />
-      <Menu
+      <HeaderMenu
         visible={menuVisible}
-        onDismiss={() => setMenuVisible(false)}
-        anchor={{x: Dimensions.get("window").width, y: 120}}>
+        onDismiss={() => setMenuVisible(false)}>
         <Menu.Item onPress={() => {
           setMenuVisible(false)
           onExportPress()
@@ -121,7 +121,7 @@ const MainScreen: React.FC = () => {
           setMenuVisible(false)
           onImportPress()
         }} title="データのインポート" />
-      </Menu>
+      </HeaderMenu>
       <Portal>
         <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
           <Dialog.Title>データのインポート</Dialog.Title>

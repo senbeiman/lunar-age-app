@@ -15,7 +15,7 @@ const create = () => {
   db.transaction(
     tx => {
       tx.executeSql(
-        `create table if not exists items (id integer primary key not null, name text not null, memo text, has_day integer not null, birthday text not null, image text);`
+        `create table if not exists items (id integer primary key not null, name text not null, memo text, has_day integer not null, birthday text not null, image text, gender text not null, notification integer default 0);`
       )
     }
   )
@@ -71,6 +71,7 @@ interface BaseValues {
   memo: string
   hasDay: number
   birthday: string
+  gender: string
   image: string | null
 }
 
@@ -79,12 +80,12 @@ interface UpdateValues extends BaseValues {
 }
 
 const update = (
-  {name, memo, hasDay, birthday, image, id}: UpdateValues,
+  {name, memo, hasDay, birthday, image, gender, id}: UpdateValues,
   callback: SQLStatementCallback) => {
   db.transaction(
     tx => {
-      tx.executeSql(`update items set name = ?, memo = ?, has_day = ?, birthday = ?, image = ? where id = ?`,
-      [name, memo, hasDay, birthday, image, id],
+      tx.executeSql(`update items set name = ?, memo = ?, has_day = ?, birthday = ?, image = ?, gender = ? where id = ?`,
+      [name, memo, hasDay, birthday, image, gender, id],
       callback
       )
     } 
@@ -92,12 +93,12 @@ const update = (
 }
 
 const insert = (
-  {name, memo, hasDay, birthday, image}: BaseValues,
+  {name, memo, hasDay, birthday, gender, image}: BaseValues,
   callback: (id: number ) => void) => {
   db.transaction(
     tx => {
-      tx.executeSql(`insert into items (name, memo, has_day, birthday, image) values (?, ?, ?, ?, ?)`, 
-      [name, memo, hasDay, birthday, image],
+      tx.executeSql(`insert into items (name, memo, has_day, birthday, gender, image) values (?, ?, ?, ?, ?, ?)`, 
+      [name, memo, hasDay, birthday, gender, image],
       (_, { insertId } ) => {
         callback(insertId)
       }

@@ -3,12 +3,14 @@ export type RouteParamList = {
     itemId: number
   }
 }
+export type Gender = "male" | "female" | "none"
 export interface DbRow {
   id: number
   birthday: string
   name: string
   memo: string
   has_day: number
+  gender: Gender
   image: string | null
 }
 export type DbRows  = {
@@ -20,5 +22,6 @@ export interface Item {
   memo: string
   birthday: Date
   hasDay: boolean
+  gender: Gender
   image: string | null
 }

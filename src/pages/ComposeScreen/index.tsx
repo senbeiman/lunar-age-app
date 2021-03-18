@@ -4,7 +4,7 @@ import { Button, Text } from 'react-native-paper'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import FormTextInput from '../../components/FormTextInput'
 import { formatISO, sub } from 'date-fns'
-import { RouteParamList } from '../../types'
+import { Gender, RouteParamList } from '../../types'
 import { format, parseISO } from 'date-fns'
 import ImagePickerAvatar from '../../components/ImagePickerAvatar'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -15,10 +15,13 @@ import { adUnitID } from '../../constants'
 import SqlService from '../../services/sqlService'
 import GuessBirthdayDialog from './GuessBirthdayDialog'
 import ErrorMessage from '../../components/ErrorMessage'
+import { RadioButton } from 'react-native-paper'
+import FormRadioGroup from '../../components/FormRadioGroup'
 
 
 interface FormValues {
   name: string
+  gender: Gender
   memo: string
   birthYear: number
   birthMonth: number
@@ -52,6 +55,7 @@ const ComposeScreen: React.FC = () => {
           const birthday = parseISO(dbItem.birthday)
           mainFormMethods.reset({
             name: dbItem.name,
+            gender: dbItem.gender,
             memo: dbItem.memo,
             birthYear: format(birthday, "yyyy"),
             birthMonth: format(birthday, "M"),
@@ -78,6 +82,7 @@ const ComposeScreen: React.FC = () => {
       memo: values.memo,
       hasDay,
       birthday: birthdayString,
+      gender: values.gender,
       image: imageUri
     }
 
@@ -135,22 +140,39 @@ const ComposeScreen: React.FC = () => {
             <View style={styles.nameRow}>
               <ImagePickerAvatar source={imageUri} onPick={uri => setImageUri(uri)}/>
               <View style={styles.nameField}>
-                <Text>名前</Text>
+                <Text style={styles.label}>名前</Text>
                 <FormTextInput
                   name="name"
                   rules={formRules.name}
                 />
               </View>
             </View>
+            <Text>性別</Text>
+            <FormRadioGroup defaultValue="none" name="gender">
+              <View style={styles.genderRow}>
+                <View style={styles.gender}>
+                  <RadioButton value="none" />
+                  <Text>なし</Text>
+                </View>
+                <View style={styles.gender}>
+                  <RadioButton value="female" />
+                  <Text>女性</Text>
+                </View>
+                <View style={styles.gender}>
+                  <RadioButton value="male" />
+                  <Text>男性</Text>
+                </View>
+              </View>
+            </FormRadioGroup>
             <View>
               <View style={styles.birthRow}>
-                <Text>生年月日</Text>
+                <Text style={styles.label}>生年月日</Text>
                 <Button onPress={() => {setDialogVisible(true)}}>逆算する</Button>
               </View>
               <BirthdayFields />
             </View>
             <View style={styles.memoField}>
-              <Text>メモ</Text>
+              <Text style={styles.label}>メモ</Text>
               <ScrollView>
                 <FormTextInput
                   name="memo"
@@ -192,6 +214,14 @@ const styles = StyleSheet.create({
   main: {
     flex: 1
   },
+  genderRow: {
+    flexDirection: "row",
+    justifyContent: "space-around"
+  },
+  gender: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   birthRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -208,15 +238,8 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 16
   },
-  guessContainer: {
-    backgroundColor: "white",
-    padding: 16,
-    borderRadius: 5,
-  },
-  triangle: {
-    backgroundColor: "white",
-    width: 10,
-    height: 10
+  label: {
+    marginBottom: 6
   }
 })
 

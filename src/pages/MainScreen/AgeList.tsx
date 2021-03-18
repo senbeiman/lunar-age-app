@@ -5,6 +5,7 @@ import { Button, Dialog, List, Portal, RadioButton } from 'react-native-paper'
 import AgeText from '../../components/AgeText'
 import AvatarDefaultSmall from '../../components/AvatarDefaultSmall'
 import AvatarImageSmall from '../../components/AvatarImageSmall'
+import GenderIcon from '../../components/GenderIcon'
 import { Item } from '../../types'
 
 const radioButtonLabels = {
@@ -65,7 +66,13 @@ const AgeList: React.FC<{items: Item[]}> = ({ items }) => {
                       <AvatarImageSmall source={item.image}/> :
                       <AvatarDefaultSmall />
                     }
-              right={(props) => <AgeText {...props} date={item.birthday} />}
+              right={(props) => 
+                <View style={styles.ageRow}>
+                  <GenderIcon gender={item.gender} />
+                  <AgeText {...props} date={item.birthday} />
+                </View>
+            
+            }
             />
           </TouchableOpacity>
         )}
@@ -99,5 +106,9 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
   },
+  ageRow: {
+    flexDirection: "row",
+    alignItems: "center"
+  }
 })
 export default AgeList

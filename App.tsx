@@ -15,7 +15,10 @@ const theme = {
   colors: {
     ...NavigationDefaultTheme.colors,
     ...PaperDefaultTheme.colors,
-    background: "white",
+    card: "#fef9ef",
+    backdrop: "#fef9ef",
+    surface: "#fef9ef",
+    background: "#fef9ef",
     accent: "#ffcb77",
     primary: "#17c3b2"
   }

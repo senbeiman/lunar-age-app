@@ -1,8 +1,8 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { format } from 'date-fns'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-import { Dimensions, StyleSheet, View } from 'react-native'
-import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog } from 'react-native-paper'
+import { StyleSheet, View } from 'react-native'
+import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog, DefaultTheme } from 'react-native-paper'
 import AgeText from '../../components/AgeText'
 import { RouteParamList, Item } from '../../types'
 import AvatarDefaultLarge from '../../components/AvatarDefaultLarge'
@@ -10,6 +10,8 @@ import AvatarImageLarge from '../../components/AvatarImageLarge'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
 import SqlService from '../../services/sqlService'
+import HeaderMenu from '../../components/HeaderMenu'
+import GenderIcon from '../../components/GenderIcon'
 
 const DetailsScreen: React.FC = () => {
   const navigation = useNavigation()
@@ -49,20 +51,29 @@ const DetailsScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.details}>
-        <View style={styles.row}>
+        <View style={styles.cardRow}>
           {item.image ? 
           <AvatarImageLarge source={item.image} />
           :
           <AvatarDefaultLarge />}
-          <Title>{item.name}</Title>
+          <View style={styles.profile}>
+            <View style={styles.nameRow}>
+              <Title>{item.name}</Title>
+              <GenderIcon gender={item.gender} />
+            </View>
+            <View style={styles.ageRow}>
+              <Text>{format(item.birthday, "yyyy年M月")}{item.hasDay && format(item.birthday, "d日")}生まれ</Text>
+              <AgeText date={item.birthday}/>
+            </View>
+          </View>
         </View>
-        <Text>{format(item.birthday, "yyyy年M月")}{item.hasDay && format(item.birthday, "d日")}生まれ</Text>
-        <AgeText date={item.birthday}/>
-        <Paragraph>{item.memo}</Paragraph>
-        <Menu
+        <Text>メモ</Text>
+        <View style={styles.memo}>
+          <Paragraph>{item.memo}</Paragraph>
+        </View>
+        <HeaderMenu
           visible={menuVisible}
-          onDismiss={() => setMenuVisible(false)}
-          anchor={{x: Dimensions.get("window").width, y: 120}}>
+          onDismiss={() => setMenuVisible(false)} >
           <Menu.Item onPress={() => {
             setMenuVisible(false)
             navigation.navigate('Compose', {
@@ -73,7 +84,7 @@ const DetailsScreen: React.FC = () => {
             setMenuVisible(false)
             setDialogVisible(true)
           }} title="削除" />
-        </Menu>
+        </HeaderMenu>
         <Portal>
           <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
             <Dialog.Title>削除</Dialog.Title>
@@ -106,10 +117,30 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  row: {
+  profile: {
+    flex: 1
+  },
+  cardRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between"
   },
+  nameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  ageRow: {
+    alignItems: "flex-end"
+  },
+  memo: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: DefaultTheme.colors.disabled,
+    borderRadius: 5,
+    padding: 16,
+    marginTop: 6
+  }
 })
 
 export default DetailsScreen
