@@ -9,7 +9,7 @@ export interface DbRow {
   name: string
   memo: string
   has_day: number
-  has_image: boolean
+  image: string | null
 }
 export type DbRows  = {
   _array: DbRow[]
@@ -20,5 +20,5 @@ export interface Item {
   memo: string
   birthday: Date
   hasDay: boolean
-  hasImage: boolean
+  image: string | null
 }

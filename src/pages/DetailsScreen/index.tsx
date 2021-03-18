@@ -10,7 +10,6 @@ import AvatarImageLarge from '../../components/AvatarImageLarge'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
 import SqlService from '../../services/sqlService'
-import FileService from '../../services/fileService'
 
 const DetailsScreen: React.FC = () => {
   const navigation = useNavigation()
@@ -41,19 +40,18 @@ const DetailsScreen: React.FC = () => {
     SqlService.remove(itemId,
       () => {navigation.goBack()}
     )
-    FileService.removeImage(itemId)
   }
 
   if (!item) {
     return null
   }
-
+  // TODO: combine AvatarImage and AvatarDefault
   return (
     <View style={styles.container}>
       <View style={styles.details}>
         <View style={styles.row}>
-          {item.hasImage ? 
-          <AvatarImageLarge source={FileService.getImageFullPathFromId(item.id)} />
+          {item.image ? 
+          <AvatarImageLarge source={item.image} />
           :
           <AvatarDefaultLarge />}
           <Title>{item.name}</Title>

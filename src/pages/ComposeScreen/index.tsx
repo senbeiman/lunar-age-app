@@ -15,7 +15,6 @@ import { adUnitID } from '../../constants'
 import SqlService from '../../services/sqlService'
 import GuessBirthdayDialog from './GuessBirthdayDialog'
 import ErrorMessage from '../../components/ErrorMessage'
-import FileService from '../../services/fileService'
 
 
 interface FormValues {
@@ -58,7 +57,7 @@ const ComposeScreen: React.FC = () => {
             birthMonth: format(birthday, "M"),
             birthDay: dbItem.has_day ? format(birthday, "d") : "",
           })
-          setImageUri(dbItem.has_image ? FileService.getImageFullPathFromId(dbItem.id) : null)
+          setImageUri(dbItem.image)
         }
       )
     })
@@ -79,7 +78,7 @@ const ComposeScreen: React.FC = () => {
       memo: values.memo,
       hasDay,
       birthday: birthdayString,
-      hasImage: imageUri ? 1 : 0
+      image: imageUri
     }
 
     itemId ?
@@ -89,14 +88,12 @@ const ComposeScreen: React.FC = () => {
           id: itemId
         },
         async () => {
-          imageUri && await FileService.copyImageFromCacheToDocument(imageUri, itemId)
           navigation.goBack()
         })
       :
       SqlService.insert(
         { ...newValues },
         async (id) => {
-          imageUri && await FileService.copyImageFromCacheToDocument(imageUri, id)
           navigation.goBack()
         })
     

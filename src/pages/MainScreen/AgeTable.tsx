@@ -6,7 +6,6 @@ import { getAgeFromBirthday } from '../../utils'
 import AvatarDefaultSmall from '../../components/AvatarDefaultSmall'
 import AvatarImageSmall from '../../components/AvatarImageSmall'
 import { useNavigation } from '@react-navigation/native'
-import FileService from '../../services/fileService'
 
 interface ItemWithAge extends Item {
   diffInMonth: number
@@ -71,8 +70,8 @@ const AgeTable: React.FC<{ items: Item[] }> = ({ items }) => {
                   })}
                 >
                   <View style={styles.avatar}>
-                    {ageItem.hasImage ? 
-                    <AvatarImageSmall source={FileService.getImageFullPathFromId(ageItem.id)}/> :
+                    {ageItem.image ? 
+                    <AvatarImageSmall source={ageItem.image}/> :
                     <AvatarDefaultSmall />}
                   </View>
                   <Text>{ageItem.name}</Text>
