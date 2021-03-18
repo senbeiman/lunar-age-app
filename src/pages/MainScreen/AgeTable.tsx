@@ -3,9 +3,8 @@ import { FlatList, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { DefaultTheme, Text, Title } from 'react-native-paper'
 import { Item } from '../../types'
 import { getAgeFromBirthday } from '../../utils'
-import AvatarDefaultSmall from '../../components/AvatarDefaultSmall'
-import AvatarImageSmall from '../../components/AvatarImageSmall'
 import { useNavigation } from '@react-navigation/native'
+import Avatar from '../../components/Avatar'
 
 interface ItemWithAge extends Item {
   diffInMonth: number
@@ -70,9 +69,7 @@ const AgeTable: React.FC<{ items: Item[] }> = ({ items }) => {
                   })}
                 >
                   <View style={styles.avatar}>
-                    {ageItem.image ? 
-                    <AvatarImageSmall source={ageItem.image}/> :
-                    <AvatarDefaultSmall />}
+                    <Avatar source={ageItem.image} />
                   </View>
                   <Text>{ageItem.name}</Text>
                 </TouchableOpacity>

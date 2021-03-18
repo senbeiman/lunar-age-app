@@ -3,8 +3,7 @@ import React, { useState } from 'react'
 import { FlatList, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Button, Dialog, List, Portal, RadioButton } from 'react-native-paper'
 import AgeText from '../../components/AgeText'
-import AvatarDefaultSmall from '../../components/AvatarDefaultSmall'
-import AvatarImageSmall from '../../components/AvatarImageSmall'
+import Avatar from '../../components/Avatar'
 import GenderIcon from '../../components/GenderIcon'
 import { Item } from '../../types'
 
@@ -62,9 +61,7 @@ const AgeList: React.FC<{items: Item[]}> = ({ items }) => {
               title={item.name}
               description={item.memo}
               left={() => 
-                      item.image ? 
-                      <AvatarImageSmall source={item.image}/> :
-                      <AvatarDefaultSmall />
+                      <Avatar source={item.image} />
                     }
               right={(props) => 
                 <View style={styles.ageRow}>
@@ -101,7 +98,8 @@ const AgeList: React.FC<{items: Item[]}> = ({ items }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    padding: 6
   },
   list: {
     flex: 1,

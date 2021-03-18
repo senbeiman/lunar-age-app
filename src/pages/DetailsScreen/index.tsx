@@ -5,13 +5,12 @@ import { StyleSheet, View } from 'react-native'
 import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog, DefaultTheme } from 'react-native-paper'
 import AgeText from '../../components/AgeText'
 import { RouteParamList, Item } from '../../types'
-import AvatarDefaultLarge from '../../components/AvatarDefaultLarge'
-import AvatarImageLarge from '../../components/AvatarImageLarge'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
 import SqlService from '../../services/sqlService'
 import HeaderMenu from '../../components/HeaderMenu'
 import GenderIcon from '../../components/GenderIcon'
+import Avatar from '../../components/Avatar'
 
 const DetailsScreen: React.FC = () => {
   const navigation = useNavigation()
@@ -47,15 +46,11 @@ const DetailsScreen: React.FC = () => {
   if (!item) {
     return null
   }
-  // TODO: combine AvatarImage and AvatarDefault
   return (
     <View style={styles.container}>
       <View style={styles.details}>
         <View style={styles.cardRow}>
-          {item.image ? 
-          <AvatarImageLarge source={item.image} />
-          :
-          <AvatarDefaultLarge />}
+          <Avatar source={item.image} large />
           <View style={styles.profile}>
             <View style={styles.nameRow}>
               <Title>{item.name}</Title>
@@ -122,8 +117,6 @@ const styles = StyleSheet.create({
   },
   cardRow: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
   },
   nameRow: {
     flexDirection: "row",

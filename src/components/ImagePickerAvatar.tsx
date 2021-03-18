@@ -2,8 +2,7 @@ import React from 'react'
 import { Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker'
-import AvatarDefaultLarge from './AvatarDefaultLarge'
-import AvatarImageLarge from './AvatarImageLarge'
+import Avatar from './Avatar'
 
 interface Props {
   source: string | null
@@ -36,9 +35,7 @@ const ImagePickerAvatar: React.FC<Props> = ({ source, onPick }) => {
 
   return (
     <TouchableOpacity onPress={pickImage}>
-      {source ? 
-      <AvatarImageLarge source={source} /> :
-      <AvatarDefaultLarge />}
+      <Avatar source={source} large />
     </TouchableOpacity>
   )
 }
