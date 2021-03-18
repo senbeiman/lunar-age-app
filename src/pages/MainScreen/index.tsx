@@ -8,7 +8,7 @@ import AgeList from './AgeList'
 import ListToggleButtons from './ListToggleButtons'
 import { AdMobBanner } from 'expo-ads-admob'
 import { adUnitID } from '../../constants'
-import SqlService from '../../services/sqlService'
+import SqlService, { dbFile } from '../../services/sqlService'
 import * as DocumentPicker from 'expo-document-picker'
 import * as Sharing from 'expo-sharing'
 import FileService from '../../services/fileService'
@@ -73,7 +73,7 @@ const MainScreen: React.FC = () => {
     })
     if (result.type === 'success') {
       if (result.name !== SqlService.dbFile) {
-        alert('ファイル名が違います。lunar-age-app.dbを選択してください')
+        alert(`ファイル名が違います。${dbFile}を選択してください`)
         return
       }
       setDbUri(result.uri)

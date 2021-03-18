@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "月齢リスト",
-    "slug": "lunar-age-app",
+    "slug": "age-in-months-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,11 +18,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.github.senbeiman.lunar-age-app",
+      "bundleIdentifier": "com.github.senbeiman.age-in-months-app",
       "buildNumber": "1000000"
     },
     "android": {
-      "package": "com.github.senbeiman.lunar_age_app",
+      "package": "com.github.senbeiman.age_in_months_app",
       "versionCode": 1000000,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

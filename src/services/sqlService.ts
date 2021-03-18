@@ -3,7 +3,7 @@ import { SQLStatementCallback } from 'expo-sqlite'
 import { DbRow, DbRows } from '../types'
 import { parseISO } from 'date-fns'
 
-export const dbFile = 'lunar-age-app.db'
+export const dbFile = 'age-in-months-app.db'
 let db = SQLite.openDatabase(dbFile)
 
 const reopen = () => {
