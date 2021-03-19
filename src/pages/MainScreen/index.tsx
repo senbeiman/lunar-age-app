@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-import { Dimensions, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Button, Dialog, FAB, IconButton, Menu, Paragraph, Portal } from 'react-native-paper'
 import { Item } from '../../types'
 import AgeTable from './AgeTable'

@@ -11,6 +11,7 @@ import SqlService from '../../services/sqlService'
 import HeaderMenu from '../../components/HeaderMenu'
 import GenderIcon from '../../components/GenderIcon'
 import Avatar from '../../components/Avatar'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const DetailsScreen: React.FC = () => {
   const navigation = useNavigation()
@@ -64,7 +65,9 @@ const DetailsScreen: React.FC = () => {
         </View>
         <Text>メモ</Text>
         <View style={styles.memo}>
-          <Paragraph>{item.memo}</Paragraph>
+          <ScrollView style={styles.memoScroll}>
+            <Paragraph>{item.memo}</Paragraph>
+          </ScrollView>
         </View>
         <HeaderMenu
           visible={menuVisible}
@@ -131,8 +134,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: DefaultTheme.colors.disabled,
     borderRadius: 5,
-    padding: 16,
+    paddingVertical: 16,
     marginTop: 6
+  },
+  memoScroll: {
+    paddingHorizontal: 16
   }
 })
 

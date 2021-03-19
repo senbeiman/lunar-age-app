@@ -1,4 +1,4 @@
-import { differenceInMonths, parseISO } from "date-fns"
+import { differenceInMonths } from "date-fns"
 
 export const getAgeFromBirthday = (birthday: Date) => {
   const diffInMonth = differenceInMonths(new Date(), birthday)
