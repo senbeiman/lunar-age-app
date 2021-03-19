@@ -94,18 +94,16 @@ const MainScreen: React.FC = () => {
   }
   return (
     <View style={styles.container}>
-      {toggleValue === 'list' ? 
-      <AgeList items={items}/> :
-      <AgeTable items={items}/> }
-      <FAB 
-        style={{
-          position: 'absolute',
-          right: 16,
-          bottom: 64,
-        }} 
-        icon="plus"
-        onPress={onPressAdd}
-      />
+      <View style={styles.app}>
+        {toggleValue === 'list' ? 
+        <AgeList items={items}/> :
+        <AgeTable items={items}/> }
+        <FAB 
+          style={styles.fab}
+          icon="plus"
+          onPress={onPressAdd}
+        />
+      </View>
       <AdMobBanner
         adUnitID={adUnitIdMain}
         servePersonalizedAds
@@ -142,9 +140,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  app: {
+    flex: 1
+  },
   header: {
     flexDirection: "row",
-  }
+  },
+  fab: {
+    position: "absolute",
+    right: 16,
+    bottom: 16
+  },
 })
 
 export default MainScreen
