@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Platform } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker'
 import Avatar from './Avatar'
+import { Menu } from 'react-native-paper'
 
 interface Props {
   source: string | null
   onPick: (uri: string) => void
+  onDefaultPress: () => void
 }
-const ImagePickerAvatar: React.FC<Props> = ({ source, onPick }) => {
+const ImagePickerAvatar: React.FC<Props> = ({ source, onPick, onDefaultPress }) => {
+  const [menuVisible, setMenuVisible] = useState(false)
 
   const pickImage = async () => {
     if (Platform.OS !== 'web') {
@@ -34,9 +37,23 @@ const ImagePickerAvatar: React.FC<Props> = ({ source, onPick }) => {
   }
 
   return (
-    <TouchableOpacity onPress={pickImage}>
-      <Avatar source={source} large />
-    </TouchableOpacity>
+    <Menu
+      visible={menuVisible}
+      onDismiss={() => {setMenuVisible(false)}}
+      anchor={
+        <TouchableOpacity onPress={() => {setMenuVisible(true)}}>
+          <Avatar source={source} large />
+        </TouchableOpacity>
+      }>
+      <Menu.Item onPress={() => {
+        setMenuVisible(false)
+        pickImage()
+      }} title="画像を選択する" />
+      <Menu.Item onPress={() => {
+        setMenuVisible(false)
+        onDefaultPress()
+      }} title="デフォルトに戻す" />
+    </Menu>
   )
 }
 

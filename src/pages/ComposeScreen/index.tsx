@@ -138,7 +138,10 @@ const ComposeScreen: React.FC = () => {
               label="日" 
             />
             <View style={styles.nameRow}>
-              <ImagePickerAvatar source={imageUri} onPick={uri => setImageUri(uri)}/>
+              <ImagePickerAvatar 
+                onDefaultPress={() => {setImageUri(null)}}
+                source={imageUri} 
+                onPick={uri => setImageUri(uri)}/>
               <View style={styles.nameField}>
                 <Text style={styles.label}>名前</Text>
                 <FormTextInput
