@@ -6,7 +6,7 @@ import { Paragraph, Text, Title, Button, IconButton, Menu, Portal, Dialog, Defau
 import AgeText from '../../components/AgeText'
 import { RouteParamList, Item } from '../../types'
 import { AdMobBanner } from 'expo-ads-admob'
-import { adUnitID } from '../../constants'
+import { adUnitIdDetails } from '../../constants'
 import SqlService from '../../services/sqlService'
 import HeaderMenu from '../../components/HeaderMenu'
 import GenderIcon from '../../components/GenderIcon'
@@ -100,7 +100,7 @@ const DetailsScreen: React.FC = () => {
         </Portal>
       </View>
       <AdMobBanner
-        adUnitID={adUnitID}
+        adUnitID={adUnitIdDetails}
         servePersonalizedAds
       />
     </View>

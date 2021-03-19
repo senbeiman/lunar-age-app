@@ -7,7 +7,7 @@ import AgeTable from './AgeTable'
 import AgeList from './AgeList'
 import ListToggleButtons from './ListToggleButtons'
 import { AdMobBanner } from 'expo-ads-admob'
-import { adUnitID } from '../../constants'
+import { adUnitIdMain } from '../../constants'
 import SqlService, { dbFile } from '../../services/sqlService'
 import * as DocumentPicker from 'expo-document-picker'
 import * as Sharing from 'expo-sharing'
@@ -107,7 +107,7 @@ const MainScreen: React.FC = () => {
         onPress={onPressAdd}
       />
       <AdMobBanner
-        adUnitID={adUnitID}
+        adUnitID={adUnitIdMain}
         servePersonalizedAds
       />
       <HeaderMenu

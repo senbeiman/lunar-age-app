@@ -11,7 +11,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import BirthdayFields from './BirthdayFields'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AdMobBanner } from 'expo-ads-admob'
-import { adUnitID } from '../../constants'
+import { adUnitIdCompose } from '../../constants'
 import SqlService from '../../services/sqlService'
 import GuessBirthdayDialog from './GuessBirthdayDialog'
 import ErrorMessage from '../../components/ErrorMessage'
@@ -196,7 +196,7 @@ const ComposeScreen: React.FC = () => {
         />
       </View>
       <AdMobBanner
-        adUnitID={adUnitID}
+        adUnitID={adUnitIdCompose}
         servePersonalizedAds
       />
     </View>
