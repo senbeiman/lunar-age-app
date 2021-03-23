@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system'
+import { dbFile } from './sqlService'
 
-const dbPath = `${FileSystem.documentDirectory}SQLite/lunar-age-app.db`
+const dbPath = `${FileSystem.documentDirectory}SQLite/${dbFile}`
 
 const removeDb = async () => {
   await FileSystem.deleteAsync(dbPath)

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "月齢メモ",
+    "name": "げつれいメモ",
     "slug": "age-in-months-app",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -19,11 +19,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.github.senbeiman.age-in-months-app",
-      "buildNumber": "1000001"
+      "buildNumber": "1000002"
     },
     "android": {
       "package": "com.github.senbeiman.age_in_months_app",
-      "versionCode": 1000001,
+      "versionCode": 1000002,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#fef9ef"
