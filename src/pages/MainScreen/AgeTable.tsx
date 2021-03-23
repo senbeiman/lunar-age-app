@@ -53,10 +53,13 @@ const AgeTable: React.FC<{ items: Item[] }> = ({ items }) => {
           <View
             style={styles.row}
           >
-            <View style={styles.label}>
-              {item.month === 0 && <Title style={styles.year}>{item.year}歳</Title>}
-              <Text>{item.month}ヶ月</Text>
-              <View style={styles.dot}></View>
+            <View style={styles.box}>
+              <View style={styles.label}>
+                {item.month === 0 && <Title style={styles.year}>{item.year}歳</Title>}
+                <Text>{item.month}ヶ月</Text>
+                <View style={styles.dot}></View>
+              </View>
+
             </View>
             <View style={styles.items}>
               {
@@ -92,12 +95,14 @@ const styles = StyleSheet.create({
   year: {
     marginRight: 12,
   },
+  box: {
+    flex: 2,
+    borderRightWidth: 1,
+  },
   label: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    alignItems: "center",
-    flex: 4,
-    borderRightWidth: 1,
+    alignItems: "flex-end",
   },
   dot: {
     borderRadius: 100,
@@ -106,11 +111,11 @@ const styles = StyleSheet.create({
     height: 6,
     marginLeft: 6,
     marginRight: -3,
+    marginBottom: 6
   },
   items: {
-    flex: 10,
+    flex: 5,
     flexDirection: "row",
-    alignItems: "center",
     flexWrap: "wrap",
   },
   item: {

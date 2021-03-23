@@ -19,11 +19,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.github.senbeiman.age-in-months-app",
-      "buildNumber": "1000002"
+      "buildNumber": "1000003"
     },
     "android": {
       "package": "com.github.senbeiman.age_in_months_app",
-      "versionCode": 1000002,
+      "versionCode": 1000003,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#fef9ef"
