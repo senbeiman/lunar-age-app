@@ -73,6 +73,9 @@ const AgeList: React.FC<{items: Item[]}> = ({ items }) => {
             />
           </TouchableOpacity>
         )}
+        ListFooterComponent={
+          <View style={styles.footer}></View>
+        }
       />
       <Portal>
         <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
@@ -107,6 +110,9 @@ const styles = StyleSheet.create({
   ageRow: {
     flexDirection: "row",
     alignItems: "center"
+  },
+  footer: {
+    height: 80
   }
 })
 export default AgeList
